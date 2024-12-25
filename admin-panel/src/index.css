@@ -1,0 +1,76 @@
+@import "flowbite";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Reset layout để phù hợp với bảng */
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Đảm bảo padding không phá vỡ layout */
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+/* Loại bỏ căn giữa body */
+:root {
+  color: #213547;
+  background-color: #ffffff;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+/* Đảm bảo bảng hiển thị đầy đủ kích thước */
+table {
+  width: 100%;
+  border-collapse: collapse; /* Loại bỏ khoảng trắng giữa các dòng */
+}
+
+/* Căn chỉnh bảng */
+th,
+td {
+  padding: 12px; /* Tăng khoảng cách giữa nội dung và viền */
+  text-align: left;
+  vertical-align: middle;
+}
+
+/* Styling cho tiêu đề bảng */
+th {
+  font-weight: 600;
+  background-color: #f3f4f6; /* Nền xám nhạt */
+  color: #374151; /* Màu chữ đậm */
+}
+
+/* Styling khi hover */
+tr:hover {
+  background-color: #f9fafb; /* Hover nhạt */
+}
+
+/* Styling cho button */
+button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: #6366f1;
+  color: white;
+}
+
+/* Ảnh trong bảng */
+img {
+  max-width: 50px; /* Giới hạn chiều rộng */
+  height: auto;
+  border-radius: 4px; /* Bo tròn nhẹ ảnh */
+}
+
+.backdrop-blur {
+  position: fixed;
+  inset: 0; /* Phủ kín màn hình */
+  backdrop-filter: blur(1px); /* Hiệu ứng mờ */
+  background-color: rgba(0, 0, 0, 0.5); /* Màu tối nhẹ */
+  z-index: 50; /* Đảm bảo nằm trên các phần tử khác */
+}
