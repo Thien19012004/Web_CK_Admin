@@ -11,4 +11,22 @@ export const addProduct = (product) => api.post("/products", product);
 export const updateProduct = (id, product) => api.put(`/products/${id}`, product);
 export const deleteProduct = (id) => api.delete(`/products/${id}`);
 
+// Tải ảnh lên
+export const uploadImage = (formData) =>
+  api.post("/products/upload", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+// Cập nhật ảnh
+export const updateProductImages = (id, images) => {
+  console.log("Updating product images with:", images); // Log dữ liệu gửi lên
+  return api.put(`/products/${id}/update-images`, {
+    images: JSON.stringify(images), // Chuyển thành JSON hợp lệ
+  });
+};
+
+
+// Lấy ảnh của sản phẩm
+export const getProductImages = (id) => api.get(`/products/${id}/images`);
+
 export default api;

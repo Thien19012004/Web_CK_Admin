@@ -26,8 +26,8 @@ const UpdateProductDrawer = ({ product, onClose, onSave }) => {
           <h2 className="text-xl font-semibold">Update Product</h2>
 
           {/* Nút đóng */}
-          <button onClick={onClose}>
-            <XMarkIcon className="w-6 h-6 text-gray-600 hover:text-gray-800" />
+          <button  onClick={onClose}>
+            <XMarkIcon className="w-6 h-6 text-gray-600" />
           </button>
         </div>
 

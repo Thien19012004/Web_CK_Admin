@@ -1,0 +1,27 @@
+/* Điều chỉnh kích thước và màu cho nút điều hướng */
+.swiper-button-prev,
+.swiper-button-next {
+  color: black; /* Đổi màu thành đen */
+  width: 30px; /* Giảm kích thước */
+  height: 30px;
+}
+
+/* Căn giữa nội dung ảnh khi kích thước khác nhau */
+.swiper-slide img {
+  display: block;
+  margin: 0 auto; /* Hiển thị chính giữa */
+  max-width: 100%; /* Không vượt quá khung */
+  max-height: 400px; /* Giới hạn chiều cao */
+  object-fit: contain; /* Giữ tỷ lệ và căn giữa */
+}
+
+/* Điều chỉnh nút X để hover chính xác */
+.close-btn {
+  cursor: pointer; /* Đổi con trỏ chuột */
+  padding: 8px; /* Thêm vùng bấm lớn hơn */
+  transition: transform 0.2s;
+}
+
+.close-btn:hover {
+  transform: scale(1.2); /* Hiệu ứng phóng to nhẹ khi hover */
+}

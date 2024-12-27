@@ -5,7 +5,9 @@ import {
   updateProduct,
   deleteProduct,
 } from "../services/api";
+
 import UpdateProductDrawer from "../components/UpdateProductDrawer";
+import PictureSlider from "../components/PictureSlider"; // Import PictureSlider
 import {
   Table,
   TableBody,
@@ -24,7 +26,12 @@ const Products = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false); // Hiển thị Modal xác nhận xóa
   const [productToDelete, setProductToDelete] = useState(null); // Sản phẩm cần xóa
 
-  // Load danh sách sản phẩm
+  // **State cho Picture Slider**
+  const [showSlider, setShowSlider] = useState(false);
+  const [sliderImages, setSliderImages] = useState([]);
+  const [sliderProductId, setSliderProductId] = useState(""); // ID của sản phẩm cần chỉnh sửa ảnh
+
+  // **Load danh sách sản phẩm**
   const loadProducts = async () => {
     try {
       const { data } = await fetchProducts();
@@ -38,42 +45,53 @@ const Products = () => {
     loadProducts();
   }, []);
 
-  // Hàm mở Drawer để chỉnh sửa sản phẩm
+  // **Mở Drawer chỉnh sửa sản phẩm**
   const handleOpenDrawer = (product) => {
     setSelectedProduct(product);
     setShowDrawer(true);
   };
 
-  // Đóng Drawer
+  // **Đóng Drawer**
   const handleCloseDrawer = () => {
     setSelectedProduct(null);
     setShowDrawer(false);
   };
 
-  // Cập nhật sản phẩm
+  // **Cập nhật sản phẩm**
   const handleUpdateProduct = async (id, updatedData) => {
+    const formattedData = {
+      ...updatedData,
+      createdAt: new Date(updatedData.createdAt),
+      updatedAt: new Date(),
+    };
+
+    console.log("Sending Data:", formattedData);
+
     try {
-      await updateProduct(id, updatedData);
+      await updateProduct(id, formattedData);
       loadProducts();
       handleCloseDrawer();
     } catch (error) {
-      console.error("Failed to update product:", error);
+      console.error(
+        "Failed to update product:",
+        error.response?.data || error.message
+      );
     }
   };
 
-  // Mở Modal xác nhận xóa
+  // **Mở Modal xác nhận xóa**
   const handleOpenDeleteModal = (product) => {
     setProductToDelete(product);
     setShowDeleteModal(true);
   };
 
-  // Đóng Modal xác nhận xóa
+  // **Đóng Modal xác nhận xóa**
   const handleCloseDeleteModal = () => {
     setProductToDelete(null);
     setShowDeleteModal(false);
   };
 
-  // Xác nhận xóa sản phẩm
+  // **Xác nhận xóa sản phẩm**
   const handleDeleteConfirmed = async () => {
     try {
       if (productToDelete) {
@@ -84,6 +102,19 @@ const Products = () => {
     } catch (error) {
       console.error("Failed to delete product:", error);
     }
+  };
+
+  // **Mở Slider**
+  const handleOpenSlider = (selectedProduct) => {
+    setSliderImages(selectedProduct.img); // Truyền danh sách ảnh
+    setSliderProductId(selectedProduct._id); // Truyền đúng ID sản phẩm
+    setShowSlider(true); // Hiển thị slider
+  };
+
+  // **Đóng Slider**
+  const handleCloseSlider = () => {
+    setSliderImages([]); // Xóa ảnh khỏi state khi đóng
+    setShowSlider(false);
   };
 
   return (
@@ -132,6 +163,13 @@ const Products = () => {
                 >
                   Delete
                 </button>
+                {/* Nút Image */}
+                <button
+                  className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
+                  onClick={() => handleOpenSlider(product)}
+                >
+                  Image
+                </button>
               </TableCell>
             </TableRow>
           ))}
@@ -140,14 +178,14 @@ const Products = () => {
 
       {/* Hiển thị Drawer cập nhật sản phẩm */}
       {showDrawer && selectedProduct && (
-  <UpdateProductDrawer
-    product={selectedProduct}
-    onClose={handleCloseDrawer}
-    onSave={(updatedData) =>
-      handleUpdateProduct(selectedProduct._id, updatedData)
-    } 
-  />
-)}
+        <UpdateProductDrawer
+          product={selectedProduct}
+          onClose={handleCloseDrawer}
+          onSave={(updatedData) =>
+            handleUpdateProduct(selectedProduct._id, updatedData)
+          }
+        />
+      )}
 
       {/* Modal xác nhận xóa */}
       <Modal show={showDeleteModal} onClose={handleCloseDeleteModal}>
@@ -167,6 +205,15 @@ const Products = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {/* Picture Slider */}
+      {showSlider && (
+        <PictureSlider
+        productId={sliderProductId} // Đảm bảo ID sản phẩm đúng
+        images={sliderImages}
+        onClose={handleCloseSlider}
+      />
+      )}
     </div>
   );
 };
