@@ -91,38 +91,32 @@ const updateProduct = async (req, res) => {
 
 // Cập nhật ảnh cho sản phẩm
 const updateProductImg = async (req, res) => {
-  console.log("Request received for ID:", req.params.id); // Log ID sản phẩm
-  console.log("Request method:", req.method); // Log phương thức (PUT)
-  console.log("Request body:", req.body); // Log dữ liệu body
-  console.log("Request file:", req.file); // Log file upload nếu có
-
   try {
     const product = await Product.findById(req.params.id);
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    // // Nếu có file tải lên, thêm ảnh vào Cloudinary
-    // if (req.file) {
-    //   const result = await cloudinary.uploader.upload(req.file.path, {
-    //     folder: "products",
-    //   });
-    //   product.img.push(result.secure_url);
-    // }
-
-    // Nếu có danh sách ảnh từ body
-    if (req.body.images) {
-      const newImages = JSON.parse(req.body.images); // Chuyển chuỗi JSON thành mảng
-      product.img = [...product.img, ...newImages]; // Thêm ảnh mới
+    // Lấy danh sách ảnh từ body
+    const { images } = req.body;
+    if (!images || !Array.isArray(images)) {
+      return res.status(400).json({ message: "Invalid images data" });
     }
 
+    // Ghi đè danh sách ảnh mới
+    product.img = images;
+
+    // Lưu lại sản phẩm vào database
     const updatedProduct = await product.save();
-    res.json(updatedProduct); // Trả về dữ liệu sản phẩm đã cập nhật
+    console.log("Saved product images:", updatedProduct.img); // Log danh sách ảnh đã lưu
+    res.json(updatedProduct); // Trả về dữ liệu cập nhật
   } catch (error) {
     console.error("Error updating images:", error);
-    res.status(400).json({ message: error.message }); // Trả về lỗi 400 nếu có vấn đề
+    res.status(500).json({ message: "Failed to update images" });
   }
 };
+
+
 
 
 // Xóa sản phẩm
@@ -167,15 +161,16 @@ const getProductsByStatus = async (req, res) => {
 // Lấy ảnh của sản phẩm
 const getProductImages = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id); // Tìm sản phẩm
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
-    res.json({ images: product.img });
+    res.json(product.img); // Trả về danh sách ảnh
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Failed to fetch images" });
   }
 };
+
 
 module.exports = {
   getProducts,
