@@ -29,4 +29,19 @@ export const updateProductImages = (id, images) => {
 // Lấy ảnh của sản phẩm
 export const getProductImages = (id) => api.get(`/products/${id}/images`);
 
+// Lọc sản phẩm
+export const fetchFilteredProducts = async (filters) => {
+  const query = new URLSearchParams(filters).toString(); // Chuyển object thành query string
+  return await axios.get(`/api/products/filter?${query}`); // Gọi API
+};
+
+export const fetchSortedProducts = async (sort) => {
+  const query = new URLSearchParams(sort).toString(); // Chuyển object sort thành query string
+  return await axios.get(`/api/products/sort?${query}`); // Gọi API backend
+};
+
+// Gọi API phân trang sản phẩm
+export const fetchPagedProducts = async (query) => {
+  return await axios.get(`/api/products/paging?${query}`);
+};
 export default api;
