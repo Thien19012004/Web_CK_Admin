@@ -10,10 +10,19 @@ const {
   uploadImage,
   updateProductImg,
   getProductImages,
+  filterProducts,
+  sortProducts,
+  getPagedProducts, // API phân trang sản phẩm
 } = require('../controllers/productController');
 
 // Routes
 router.get('/', getProducts);              // Lấy danh sách sản phẩm
+
+router.get('/filter', filterProducts); // API lọc sản phẩm
+router.get("/sort", sortProducts); // Route sắp xếp sản phẩm
+router.get("/paging", getPagedProducts); // API phân trang sản phẩm
+
+
 router.post('/', createProduct);           // Thêm sản phẩm mới
 router.put('/:id', updateProduct);         // Cập nhật sản phẩm
 router.delete('/:id', deleteProduct);      // Xóa sản phẩm
@@ -97,5 +106,8 @@ router.get('/:id', async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+
+
 
 module.exports = router;

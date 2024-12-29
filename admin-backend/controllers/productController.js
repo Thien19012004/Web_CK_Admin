@@ -171,6 +171,102 @@ const getProductImages = async (req, res) => {
   }
 };
 
+const filterProducts = async (req, res) => {
+  try {
+    const { size, category, gender } = req.query; // Lấy dữ liệu lọc từ query string
+
+    // Tạo điều kiện lọc động
+    const filter = {};
+
+    if (size) {
+      filter.sizes = size; // Lọc theo size (exact match)
+    }
+    if (category) {
+      filter.category = category; // Lọc theo category (exact match)
+    }
+    if (gender) {
+      filter.gender = gender; // Lọc theo gender (exact match)
+    }
+
+    const products = await Product.find(filter); // Tìm sản phẩm theo điều kiện lọc
+    res.json(products); // Trả về danh sách sản phẩm đã lọc
+  } catch (error) {
+    console.error("Error filtering products:", error);
+    res.status(500).json({ message: "Failed to filter products" });
+  }
+};
+
+// Hàm sắp xếp sản phẩm
+const sortProducts = async (req, res) => {
+  try {
+    const { sortBy, order } = req.query; // Lấy thông tin sortBy và order từ query string
+
+    // Kiểm tra tham số hợp lệ
+    const validSortBy = ["createdAt", "price"];
+    if (!validSortBy.includes(sortBy)) {
+      return res.status(400).json({ message: "Invalid sort field" });
+    }
+
+    const sortOrder = order === "desc" ? -1 : 1; // Sắp xếp tăng dần (asc) hoặc giảm dần (desc)
+
+    // Lấy danh sách sản phẩm đã sắp xếp
+    const products = await Product.find().sort({ [sortBy]: sortOrder });
+
+    res.json(products); // Trả về danh sách đã sắp xếp
+  } catch (error) {
+    console.error("Error sorting products:", error);
+    res.status(500).json({ message: "Failed to sort products" });
+  }
+};
+
+// API lấy danh sách sản phẩm với Filter, Sort và Paging
+const getPagedProducts = async (req, res) => {
+  try {
+    const {
+      page = 1,
+      limit = 10,
+      sortBy,
+      order,
+      size,
+      category,
+      gender,
+    } = req.query;
+
+    let filter = {};
+
+    // Bộ lọc
+    if (size) filter.sizes = size;
+    if (category) filter.category = category;
+    if (gender) filter.gender = gender;
+
+    const skip = (page - 1) * limit;
+
+    // **Xử lý sắp xếp**
+    let sort = {};
+    if (sortBy && order) {
+      sort[sortBy] = order === "desc" ? -1 : 1;
+    }
+
+    // Truy vấn dữ liệu
+    const products = await Product.find(filter)
+      .sort(sort) // Áp dụng sắp xếp (nếu có)
+      .skip(skip)
+      .limit(Number(limit));
+
+    const total = await Product.countDocuments(filter);
+
+    res.status(200).json({
+      data: products,
+      currentPage: Number(page),
+      totalPages: Math.ceil(total / limit),
+      totalProducts: total,
+    });
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).json({ message: "Failed to fetch products" });
+  }
+};
+
 
 module.exports = {
   getProducts,
@@ -181,5 +277,8 @@ module.exports = {
   getProductsByStatus, // Thêm hàm lọc theo trạng thái
   uploadImage,
   updateProductImg, // Thêm hàm cập nhật ảnh
-  getProductImages
+  getProductImages,
+  filterProducts, // Thêm hàm lọc sản phẩm theo thông tin
+  sortProducts, // Thêm hàm sắp xếp sản phẩm
+  getPagedProducts, // Thêm hàm lấy danh sách sản phẩm với phân trang
 };
