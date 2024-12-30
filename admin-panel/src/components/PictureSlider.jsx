@@ -190,13 +190,14 @@ const PictureSlider = ({ productId, images = [], onClose }) => {
             className="mySwiper mb-4 relative"
           >
             {imageList.map((img, index) => (
-              <SwiperSlide key={index} className="flex justify-center items-center h-96">
-                <img
-                  src={img}
-                  alt={`Slide ${index + 1}`}
-                  className="object-contain max-w-full max-h-80 rounded-lg"
-                />
-                  </SwiperSlide>
+              <SwiperSlide key={index} className="flex justify-center items-center h-[400px]">
+              <img
+                src={img}
+                alt={`Slide ${index + 1}`}
+                className="object-contain max-w-full max-h-[400px] rounded-lg"
+              />
+            </SwiperSlide>
+            
               ))}
             </Swiper>
           

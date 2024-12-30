@@ -7,7 +7,23 @@ const api = axios.create({
 
 // Các API
 export const fetchProducts = () => api.get("/products");
-export const addProduct = (product) => api.post("/products", product);
+
+// API thêm sản phẩm
+export const addProduct = async (productData) => {
+  try {
+    const response = await api.post("/products", productData, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response;
+  } catch (error) {
+    console.error("Failed to add product:", error);
+    throw error;
+  }
+};
+
+
+
+
 export const updateProduct = (id, product) => api.put(`/products/${id}`, product);
 export const deleteProduct = (id) => api.delete(`/products/${id}`);
 
@@ -16,6 +32,21 @@ export const uploadImage = (formData) =>
   api.post("/products/upload", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
+
+// API mới dành riêng cho việc upload ảnh sản phẩm
+export const uploadProductImage = async (formData) => {
+  try {
+    const response = await api.post("/products/upload", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to upload product image:", error);
+    throw error;
+  }
+};
+
+
 
 // Cập nhật ảnh
 export const updateProductImages = (id, images) => {

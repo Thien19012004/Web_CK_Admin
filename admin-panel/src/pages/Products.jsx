@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { FaEdit } from "react-icons/fa"; // Import icon chỉnh sửa
+import { FaTrash } from "react-icons/fa"; // Icon thùng rác
+import { FaImages } from "react-icons/fa"; // Icon cho hình ảnh
+
 import {
   fetchProducts,
   addProduct,
@@ -11,6 +15,8 @@ import {
 
 import UpdateProductDrawer from "../components/UpdateProductDrawer";
 import PictureSlider from "../components/PictureSlider"; // Import PictureSlider
+import AddProductModal from "../components/AddProductModal"; // Import modal thêm sản phẩm
+
 import {
   Table,
   TableBody,
@@ -28,6 +34,9 @@ const Products = () => {
   const [showDrawer, setShowDrawer] = useState(false); // Trạng thái hiển thị Drawer
   const [showDeleteModal, setShowDeleteModal] = useState(false); // Hiển thị Modal xác nhận xóa
   const [productToDelete, setProductToDelete] = useState(null); // Sản phẩm cần xóa
+  const [showAddModal, setShowAddModal] = useState(false); // Trạng thái mở modal thêm sản phẩm
+  const [formErrors, setFormErrors] = useState({}); // Trạng thái lỗi
+
 
   // **State cho Picture Slider**
   const [showSlider, setShowSlider] = useState(false);
@@ -93,6 +102,21 @@ useEffect(() => {
 }, [filters, sort]);
 
 
+  // **Thêm sản phẩm**
+  const handleAddProduct = async (formData) => {
+    try {
+      setLoading(true); // Hiển thị loading
+      const response = await addProduct(formData); // Gọi API thêm sản phẩm
+      setProducts((prev) => [...prev, response.data]); // Thêm sản phẩm mới vào danh sách
+      setShowAddModal(false); // Đóng modal
+    } catch (error) {
+      console.error("Failed to add product:", error);
+    } finally {
+      setLoading(false); // Tắt loading
+    }
+  };
+  
+
   //**Load danh sách sản phẩm**
   const loadProducts = async () => {
     try {
@@ -149,27 +173,108 @@ useEffect(() => {
     setShowDrawer(false);
   };
 
+  const validateProductInput = (data) => {
+    const errors = {}; // Khởi tạo object chứa lỗi
+  
+    // Kiểm tra tên sản phẩm
+    if (!data.name || data.name.trim() === "") {
+      errors.name = "Product name is required.";
+    }
+  
+    // Kiểm tra giá sản phẩm
+    if (!data.price || isNaN(data.price) || Number(data.price) <= 0) {
+      errors.price = "Price must be a positive number.";
+    }
+  
+    // Kiểm tra mô tả sản phẩm
+    if (!data.desc || data.desc.trim() === "") {
+      errors.desc = "Description is required.";
+    }
+  
+    // Kiểm tra giới tính
+    const validGenders = ["MEN", "WOMEN"];
+    if (!data.gender || !validGenders.includes(data.gender)) {
+      errors.gender = "Gender must be 'MEN' or 'WOMEN'.";
+    }
+  
+    // Kiểm tra danh mục sản phẩm
+    const validCategories = ["Running", "Casual", "Sports", "Formal"];
+    if (!data.category || !validCategories.includes(data.category)) {
+      errors.category = "Category is invalid.";
+    }
+  
+    // Kiểm tra sizes
+    const validSizes = ["40", "41", "42", "43", "44"];
+    if (
+      !data.sizes ||
+      !Array.isArray(data.sizes) ||
+      data.sizes.some((size) => !validSizes.includes(size))
+    ) {
+      errors.sizes = "Sizes must be valid options: 40, 41, 42, 43, 44.";
+    }
+  
+    // Kiểm tra trạng thái
+    const validStatuses = ["In Stock", "Out Of Stock"];
+    if (!data.status || !validStatuses.includes(data.status)) {
+      errors.status = "Status must be 'In Stock' or 'Out Of Stock'.";
+    }
+  
+    return errors; // Trả về danh sách lỗi
+  };
+  
   // **Cập nhật sản phẩm**
   const handleUpdateProduct = async (id, updatedData) => {
-    const formattedData = {
-      ...updatedData,
-      createdAt: new Date(updatedData.createdAt),
-      updatedAt: new Date(),
-    };
-
-    console.log("Sending Data:", formattedData);
-
+    const errors = {};
+  
+    // **Kiểm tra dữ liệu đầu vào**
+    if (!updatedData.name || updatedData.name.trim() === "") {
+      errors.name = "Product name is required";
+    }
+    if (!updatedData.price || isNaN(updatedData.price) || updatedData.price <= 0) {
+      errors.price = "Price must be a positive number";
+    }
+    if (!updatedData.desc || updatedData.desc.trim() === "") {
+      errors.desc = "Description is required";
+    }
+    if (!updatedData.gender || !["MEN", "WOMEN"].includes(updatedData.gender)) {
+      errors.gender = "Gender must be 'MEN' or 'WOMEN'";
+    }
+    if (!updatedData.category || updatedData.category.trim() === "") {
+      errors.category = "Category is required";
+    }
+    if (
+      !updatedData.sizes ||
+      !Array.isArray(updatedData.sizes) ||
+      updatedData.sizes.some((size) => !["40", "41", "42", "43", "44"].includes(size))
+    ) {
+      errors.sizes = "Invalid sizes selected";
+    }
+    if (
+      !updatedData.status ||
+      !["On Stock", "Out Of Stock", "Suspend"].includes(updatedData.status)
+    ) {
+      errors.status = "Status must be 'In Stock' or 'Out Of Stock'";
+    }
+  
+    // **Kiểm tra có lỗi hay không**
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors); // Hiển thị lỗi trên modal
+      return; // Không đóng modal
+    }
+  
+    // Nếu không có lỗi, tiến hành cập nhật
     try {
-      await updateProduct(id, formattedData);
-      loadPagedProducts(currentPage);
-      handleCloseDrawer();
+      await updateProduct(id, updatedData); // Gọi API cập nhật
+      loadPagedProducts(currentPage); // Tải lại dữ liệu
+      handleCloseDrawer(); // Đóng modal chỉ khi cập nhật thành công
     } catch (error) {
-      console.error(
-        "Failed to update product:",
-        error.response?.data || error.message
-      );
+      console.error("Failed to update product:", error);
+      setFormErrors({ server: "Failed to update product. Please try again." });
     }
   };
+  
+  
+  
 
   // **Mở Modal xác nhận xóa**
   const handleOpenDeleteModal = (product) => {
@@ -213,58 +318,72 @@ useEffect(() => {
     <div className="overflow-x-auto p-6">
       <h1 className="text-3xl font-bold mb-6">All Products</h1>
 
-       {/* Loading Indicator */}
-       {loading && (
-        <div className="flex justify-center my-4">
-          <p className="text-lg">Loading...</p>
-        </div>
-      )}
-          {/* Bộ lọc sản phẩm */}
-          <select
-            value={filters.category}
-            onChange={(e) => setFilters({ ...filters, category: e.target.value })}
-            className="border p-2 rounded"
-          >
-            <option value="">All Categories</option>
-            <option value="Running">Running</option>
-            <option value="Casual">Casual</option>
-            <option value="Sports">Sports</option>
-          </select>
+      {/* Container cho nút và các bộ lọc */}
+<div className="flex justify-between items-center mb-4">
+  {/* Nút mở modal thêm sản phẩm */}
+  <button
+    className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+    onClick={() => setShowAddModal(true)} // Hiển thị modal thêm sản phẩm
+  >
+    + Add Product
+  </button>
 
-       {/* Bộ sắp xếp */}
-       <div className="flex space-x-4 mb-6">
-              {/* Sort By */}
-              <select
-                value={sort.sortBy}
-                onChange={(e) =>
-                  setSort({
-                    ...sort,
-                    sortBy: e.target.value || "", // Không chọn gì thì set về ""
-                  })
-                }
-                className="border p-2 rounded"
-              >
-                <option value="">No Sort</option> {/* Mặc định */}
-                <option value="createdAt">Creation Time</option>
-                <option value="price">Price</option>
-              </select>
+  {/* Bộ lọc sản phẩm */}
+  <div className="flex items-center space-x-4">
+    {/* Label cho Filter */}
+    <label className="text-sm font-medium text-gray-700">Filter by:</label>
+    <select
+      value={filters.category}
+      onChange={(e) =>
+        setFilters({ ...filters, category: e.target.value })
+      }
+      className="border p-2 rounded"
+    >
+      <option value="">All Categories</option>
+      <option value="Running">Running</option>
+      <option value="Casual">Casual</option>
+      <option value="Sports">Sports</option>
+    </select>
+  </div>
 
-              {/* Order */}
-              <select
-                value={sort.order}
-                onChange={(e) =>
-                  setSort({
-                    ...sort,
-                    order: e.target.value || "", // Không chọn gì thì set về ""
-                  })
-                }
-                className="border p-2 rounded"
-                disabled={!sort.sortBy} // Vô hiệu hóa nếu chưa chọn trường sắp xếp
-              >
-                <option value="asc">Ascending</option>
-                <option value="desc">Descending</option>
-              </select>
-            </div>
+  {/* Bộ sắp xếp */}
+  <div className="flex items-center space-x-4">
+    {/* Label cho Sort */}
+    <label className="text-sm font-medium text-gray-700">Sort by:</label>
+    {/* Sort Field */}
+    <select
+      value={sort.sortBy}
+      onChange={(e) =>
+        setSort({
+          ...sort,
+          sortBy: e.target.value || "", // Không chọn gì thì set về ""
+        })
+      }
+      className="border p-2 rounded"
+    >
+      <option value="">No Sort</option> {/* Mặc định */}
+      <option value="createdAt">Creation Time</option>
+      <option value="price">Price</option>
+    </select>
+
+    {/* Order Field */}
+    <select
+      value={sort.order}
+      onChange={(e) =>
+        setSort({
+          ...sort,
+          order: e.target.value || "", // Không chọn gì thì set về ""
+        })
+      }
+      className="border p-2 rounded"
+      disabled={!sort.sortBy} // Vô hiệu hóa nếu chưa chọn trường sắp xếp
+    >
+      <option value="asc">Ascending</option>
+      <option value="desc">Descending</option>
+    </select>
+  </div>
+</div>
+
 
 
 
@@ -301,23 +420,26 @@ useEffect(() => {
               <TableCell className="flex space-x-2">
                 {/* Nút Update */}
                 <button
-                  className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+                  className="flex items-center justify-center px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
                   onClick={() => handleOpenDrawer(product)}
                 >
-                  Update
+                  <FaEdit className="mr-2" />
+                  <span>Update</span>
                 </button>
                 {/* Nút Delete */}
                 <button
-                  className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600"
+                  className="flex items-center justify-center px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600"
                   onClick={() => handleOpenDeleteModal(product)}
                 >
+                    <FaTrash className="mr-2" />
                   Delete
                 </button>
                 {/* Nút Image */}
                 <button
-                  className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
+                  className="flex items-center justify-center px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
                   onClick={() => handleOpenSlider(product)}
                 >
+                  <FaImages className="mr-2" />
                   Image
                 </button>
               </TableCell>
@@ -354,17 +476,29 @@ useEffect(() => {
   </button>
 </div>
 
+{/* Modal thêm sản phẩm */}
+{showAddModal && (
+        <AddProductModal
+          isOpen={showAddModal}
+          onClose={() => setShowAddModal(false)}
+          onProductAdded={loadPagedProducts}
+          onSave={handleAddProduct}
+        />
+      )}
 
       {/* Hiển thị Drawer cập nhật sản phẩm */}
       {showDrawer && selectedProduct && (
-        <UpdateProductDrawer
-          product={selectedProduct}
-          onClose={handleCloseDrawer}
-          onSave={(updatedData) =>
-            handleUpdateProduct(selectedProduct._id, updatedData)
-          }
-        />
-      )}
+  <UpdateProductDrawer
+    product={selectedProduct}
+    onClose={handleCloseDrawer}
+    onSave={(updatedData) =>
+      handleUpdateProduct(selectedProduct._id, updatedData)
+    }
+    formErrors={formErrors} // Truyền lỗi vào drawer
+  />
+)}
+
+
 
       {/* Modal xác nhận xóa */}
       <Modal show={showDeleteModal} onClose={handleCloseDeleteModal}>

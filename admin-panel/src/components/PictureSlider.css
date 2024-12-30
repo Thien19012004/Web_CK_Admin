@@ -6,6 +6,22 @@
   height: 30px;
 }
 
+.mySwiper img {
+  max-width: 100%;      /* Ảnh không vượt quá chiều rộng */
+  max-height: 100%;     /* Ảnh không vượt quá chiều cao */
+  object-fit: contain;  /* Giữ tỷ lệ ảnh */
+  border-radius: 8px;   /* Bo góc ảnh */
+}
+
+.slider-container {
+  max-height: 90vh;     /* Giới hạn chiều cao của modal */
+  overflow-y: auto;     /* Kích hoạt cuộn dọc nếu nội dung quá dài */
+}
+
+.close-btn {
+  z-index: 10; /* Đảm bảo nút đóng luôn nằm trên cùng */
+}
+
 /* Căn giữa nội dung ảnh khi kích thước khác nhau */
 .swiper-slide img {
   display: block;
@@ -17,10 +33,12 @@
 
 /* Điều chỉnh nút X để hover chính xác */
 .close-btn {
-  cursor: pointer; /* Đổi con trỏ chuột */
-  padding: 8px; /* Thêm vùng bấm lớn hơn */
-  transition: transform 0.2s;
+  z-index: 50; /* Luôn nằm trên tất cả các phần khác */
+  position: absolute; /* Đặt cố định ở góc */
+  top: 10px;
+  right: 10px;
 }
+
 
 .close-btn:hover {
   transform: scale(1.2); /* Hiệu ứng phóng to nhẹ khi hover */
