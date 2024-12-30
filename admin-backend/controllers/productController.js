@@ -36,29 +36,6 @@ const uploadImage = async (req, res) => {
 };
 
 
-// Tạo sản phẩm mới
-const createProduct = async (req, res) => {
-  const { name, img, price, desc, gender, category, sizes, status } = req.body;
-
-  try {
-    const product = new Product({
-      name,
-      img,
-      price,
-      desc,
-      gender,
-      category,
-      sizes,
-      status // Thêm trạng thái sản phẩm
-    });
-
-    const newProduct = await product.save(); // Lưu sản phẩm mới
-    res.status(201).json(newProduct);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
 // Cập nhật sản phẩm
 const updateProduct = async (req, res) => {
   //console.log("Received Data:", req.body); // Log dữ liệu nhận được
@@ -267,6 +244,65 @@ const getPagedProducts = async (req, res) => {
   }
 };
 
+// Xác thực dữ liệu đầu vào
+const validateProductInput = (data) => {
+  const errors = {};
+
+  if (!data.name || data.name.trim() === "") {
+    errors.name = "Product name is required";
+  }
+  if (!data.price || isNaN(data.price) || data.price <= 0) {
+    errors.price = "Price must be a positive number";
+  }
+  if (!data.desc || data.desc.trim() === "") {
+    errors.desc = "Description is required";
+  }
+  if (!data.gender || !["MEN", "WOMEN", "UNISEX"].includes(data.gender)) {
+    errors.gender = "Gender must be 'MEN', 'WOMEN', or 'UNISEX'";
+  }
+  if (!data.category || data.category.trim() === "") {
+    errors.category = "Category is required";
+  }
+  if (!data.sizes || !Array.isArray(data.sizes) || data.sizes.length === 0) {
+    errors.sizes = "At least one size is required";
+  }
+  if (!data.status || !["In Stock", "Out Of Stock"].includes(data.status)) {
+    errors.status = "Status must be 'In Stock' or 'Out Of Stock'";
+  }
+
+  return errors;
+};
+
+// Tạo sản phẩm
+const createProduct = async (req, res) => {
+  try {
+    const { name, price, desc, gender, category, sizes, status, img } = req.body;
+
+    // Kiểm tra dữ liệu đầu vào
+    if (!name || !price || !desc || !gender || !category || !sizes || !status || !img.length) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    // Tạo sản phẩm
+    const product = new Product({
+      name,
+      price,
+      desc,
+      gender,
+      category,
+      sizes: JSON.parse(sizes), // Chuyển sizes từ JSON thành mảng
+      status,
+      img, // URL ảnh đã upload trước đó
+    });
+
+    const newProduct = await product.save();
+    res.status(201).json(newProduct);
+  } catch (error) {
+    console.error("Failed to create product:", error);
+    res.status(500).json({ message: "Failed to create product" });
+  }
+};
+
 
 module.exports = {
   getProducts,
@@ -281,4 +317,6 @@ module.exports = {
   filterProducts, // Thêm hàm lọc sản phẩm theo thông tin
   sortProducts, // Thêm hàm sắp xếp sản phẩm
   getPagedProducts, // Thêm hàm lấy danh sách sản phẩm với phân trang
+  createProduct, // Thêm hàm tạo sản phẩm
+  validateProductInput, // Thêm hàm xác thực dữ liệu đầu vào
 };
