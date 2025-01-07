@@ -76,7 +76,9 @@ export const fetchPagedProducts = async (query) => {
   return await axios.get(`/api/products/paging?${query}`);
 };
 
-export const fetchUsers = () => api.get("/users");
+export const fetchUsers = async (query) => {
+  return await api.get(`/users?${query}`);
+};
 export const deleteUser = (id) => api.delete(`/users/${id}`);
 // export const updateUserStatus = (id, status) =>
 //   api.put(`/users/${id}/status`, status);

@@ -18,18 +18,38 @@ const Users = () => {
   const [confirmMessage, setConfirmMessage] = useState(""); // Nội dung
   const [confirmAction, setConfirmAction] = useState(() => {}); // Hành động xác nhận
 
+  const [filters, setFilters] = useState({ name: "", email: "" });
+  const [sort, setSort] = useState({ field: "username", order: "asc" });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+
   // Tải danh sách người dùng
-  const loadUsers = async () => {
+  const loadUsers = async (page = 1) => {
     setLoading(true);
     try {
-      const { data } = await fetchUsers(); // Gọi API
-      setUsers(data);
+      const query = new URLSearchParams({
+        page,
+        limit: 2,
+        ...(filters.name && { name: filters.name }), // Lọc theo tên
+        ...(filters.email && { email: filters.email }), // Lọc theo email
+        ...(sort.field && { sortField: sort.field }), // Sắp xếp theo trường
+        ...(sort.order && { sortOrder: sort.order }), // Thứ tự sắp xếp
+      }).toString();
+  
+      const { data } = await fetchUsers(query);
+  
+      // Cập nhật dữ liệu
+      setUsers(data.users || []);
+      setCurrentPage(data.currentPage || 1);
+      setTotalPages(data.totalPages || 1);
     } catch (error) {
       console.error("Failed to fetch users:", error);
     } finally {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     loadUsers(); // Tải dữ liệu khi component mount
@@ -93,12 +113,63 @@ const Users = () => {
     setShowDetailModal(true); // Hiển thị modal chi tiết
   };
 
+  // **Chuyển trang**
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      loadUsers(page);
+    }
+  };
+
+
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-6">User Management</h1>
 
       {/* Loading */}
       {loading && <p>Loading...</p>}
+
+      <div className="flex gap-4 mb-4">
+  {/* Filter by Name */}
+  <input
+    type="text"
+    placeholder="Filter by name"
+    value={filters.name}
+    onChange={(e) => setFilters({ ...filters, name: e.target.value })}
+    className="border p-2 rounded"
+  />
+
+  {/* Filter by Email */}
+  <input
+    type="text"
+    placeholder="Filter by email"
+    value={filters.email}
+    onChange={(e) => setFilters({ ...filters, email: e.target.value })}
+    className="border p-2 rounded"
+  />
+  <Button color =  "blue" onClick={() => loadUsers(1)}>Apply Filters</Button>
+</div>
+
+<div className="flex gap-4 mb-4">
+  <select
+    value={sort.field}
+    onChange={(e) => setSort({ ...sort, field: e.target.value })}
+    className="border p-2 rounded"
+  >
+    <option value="username">Sort by Name</option>
+    <option value="email">Sort by Email</option>
+    <option value="registrationDate">Sort by Registration Date</option>
+  </select>
+
+  <select
+    value={sort.order}
+    onChange={(e) => setSort({ ...sort, order: e.target.value })}
+    className="border p-2 rounded"
+  >
+    <option value="asc">Ascending</option>
+    <option value="desc">Descending</option>
+  </select>
+  <Button color = "blue" onClick={() => loadUsers(1)}>Sort</Button>
+</div>
 
       {/* Bảng danh sách người dùng */}
       <Table hoverable>
@@ -166,7 +237,27 @@ const Users = () => {
         title={confirmTitle}
         message={confirmMessage}
       />
+      <div className="flex justify-center mt-6">
+  <Button color = "blue" onClick={() => loadUsers(currentPage - 1)} disabled={currentPage === 1} className="mx-1">
+    Prev
+  </Button>
+  {Array.from({ length: totalPages }, (_, index) => (
+    <Button
+      key={index}
+      onClick={() => loadUsers(index + 1)}
+      className={currentPage === index + 1 ? "bg-blue-500 text-white" : "bg-gray-200"}
+    >
+      {index + 1}
+    </Button>
+  ))}
+  <Button color = "blue" onClick={() => loadUsers(currentPage + 1)} disabled={currentPage === totalPages} className="mx-1">
+    Next
+  </Button>
+</div>
+
     </div>
+
+    
   );
 };
 
