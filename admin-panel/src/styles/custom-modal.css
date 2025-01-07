@@ -1,0 +1,22 @@
+.modal-overlay-custom {
+    position: fixed;
+    inset: 0;
+    z-index: 40; /* Đảm bảo nằm trên tất cả */
+    background-color: rgba(0, 0, 0, 0.5); /* Overlay mờ */
+    backdrop-filter: blur(5px); /* Hiệu ứng mờ */
+  }
+  
+  .modal-container-custom {
+    position: fixed;
+    z-index: 50;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 90%;
+  }
+  

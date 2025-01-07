@@ -74,3 +74,11 @@ img {
   background-color: rgba(0, 0, 0, 0.5); /* Màu tối nhẹ */
   z-index: 50; /* Đảm bảo nằm trên các phần tử khác */
 }
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5); /* Làm tối */
+  backdrop-filter: blur(8px); /* Hiệu ứng mờ */
+  z-index: 40;
+}

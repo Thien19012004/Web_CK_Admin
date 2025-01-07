@@ -75,4 +75,14 @@ export const fetchSortedProducts = async (sort) => {
 export const fetchPagedProducts = async (query) => {
   return await axios.get(`/api/products/paging?${query}`);
 };
+
+export const fetchUsers = () => api.get("/users");
+export const deleteUser = (id) => api.delete(`/users/${id}`);
+// export const updateUserStatus = (id, status) =>
+//   api.put(`/users/${id}/status`, status);
+
+export const updateUserStatus = async (id, status) => {
+  return await api.put(`/users/${id}/status`, {status} ); // Sử dụng đúng URL và body JSON
+};
+
 export default api;

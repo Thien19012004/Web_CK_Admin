@@ -1,0 +1,23 @@
+.modal-overlay {
+    position: fixed; /* Đặt overlay cố định toàn màn hình */
+    inset: 0; /* Phủ kín toàn bộ trang */
+    background-color: rgba(0, 0, 0, 0.5); /* Màu nền tối */
+    backdrop-filter: blur(5px); /* Hiệu ứng làm mờ */
+    z-index: 40; /* Đảm bảo nó nằm dưới modal */
+  }
+  
+  
+  .modal-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 50; /* Đặt trên lớp nền */
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 500px;
+    width: 100%;
+  }
+  
