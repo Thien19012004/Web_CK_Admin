@@ -19,6 +19,9 @@ const Sidebar = () => {
           <li>
             <Link to="/orders" style={{ color: "#fff", textDecoration: "none" }}>Orders</Link>
           </li>
+          <li>
+            <Link to="/profile" style={{ color: "#fff", textDecoration: "none" }}>Profile</Link>
+          </li>
         </ul>
       </nav>
     </div>

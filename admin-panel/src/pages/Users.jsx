@@ -23,6 +23,8 @@ const Users = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
+  const [currentUserId, setCurrentUserId] = useState(""); // ID của người dùng hiện tại
+
 
   // Tải danh sách người dùng
   const loadUsers = async (page = 1) => {
@@ -52,6 +54,12 @@ const Users = () => {
   
 
   useEffect(() => {
+    // Giả sử token lưu trong localStorage và chứa ID của người dùng
+  const token = localStorage.getItem('token');
+  if (token) {
+    const payload = JSON.parse(atob(token.split('.')[1])); // Giải mã token để lấy thông tin
+    setCurrentUserId(payload.id); // Lưu ID của người dùng hiện tại
+  }
     loadUsers(); // Tải dữ liệu khi component mount
   }, []);
 
@@ -75,6 +83,13 @@ const Users = () => {
 
   // **Mở Modal Xác Nhận Ban/Unban**
   const openBanConfirmModal = (user) => {
+
+     // Kiểm tra nếu user hiện tại trùng với user đang đăng nhập
+  if (user._id === currentUserId) {
+    alert("Bạn không thể ban chính mình!");
+    return;
+  }
+
     const action = () => handleToggleBan(user); // Hành động xác nhận
     const message = `Are you sure you want to ${
       user.status === "active" ? "ban" : "unban"
@@ -98,6 +113,11 @@ const Users = () => {
 
   // **Mở Modal Xác Nhận Xóa**
   const openDeleteConfirmModal = (user) => {
+    // Kiểm tra nếu user hiện tại trùng với user đang đăng nhập
+  if (user._id === currentUserId) {
+    alert("Bạn không thể xóa chính mình!");
+    return;
+  }
     const action = () => handleDelete(user); // Hành động xác nhận
     const message = `Are you sure you want to delete this user (${user.username})?`;
 
@@ -181,44 +201,50 @@ const Users = () => {
           <Table.HeadCell>Actions</Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
-          {users.map((user) => (
-            <Table.Row key={user._id}>
-              <Table.Cell>{user.username}</Table.Cell>
-              <Table.Cell>{user.email || "N/A"}</Table.Cell>
-              <Table.Cell>{user.role}</Table.Cell>
-              <Table.Cell>
-                <span
-                  className={`px-2 py-1 rounded text-white ${
-                    user.status === "active" ? "bg-green-500" : "bg-red-500"
-                  }`}
-                >
-                  {user.status}
-                </span>
-              </Table.Cell>
-              <Table.Cell className="flex space-x-2">
-                {/* Xem chi tiết */}
-                <Button color="blue" onClick={() => handleViewDetail(user)}>
-                  View Detail
-                </Button>
+        {users.map((user) => (
+  <Table.Row key={user._id}>
+    <Table.Cell>{user.username}</Table.Cell>
+    <Table.Cell>{user.email || "N/A"}</Table.Cell>
+    <Table.Cell>{user.role}</Table.Cell>
+    <Table.Cell>
+      <span
+        className={`px-2 py-1 rounded text-white ${
+          user.status === "active" ? "bg-green-500" : "bg-red-500"
+        }`}
+      >
+        {user.status}
+      </span>
+    </Table.Cell>
+    <Table.Cell className="flex space-x-2">
+      {/* Xem chi tiết */}
+      <Button color="blue" onClick={() => handleViewDetail(user)}>
+        View Detail
+      </Button>
 
-                {/* Ban/Unban */}
-                <Button
-                  color={user.status === "active" ? "warning" : "success"}
-                  onClick={() => openBanConfirmModal(user)}
-                >
-                  {user.status === "active" ? "Ban" : "Unban"}
-                </Button>
+      {/* Kiểm tra nếu không phải tài khoản đang đăng nhập thì hiển thị nút Ban/Unban và Delete */}
+      {user._id !== currentUserId && (
+        <>
+          {/* Ban/Unban */}
+          <Button
+            color={user.status === "active" ? "warning" : "success"}
+            onClick={() => openBanConfirmModal(user)}
+          >
+            {user.status === "active" ? "Ban" : "Unban"}
+          </Button>
 
-                {/* Xóa */}
-                <Button
-                  color="failure"
-                  onClick={() => openDeleteConfirmModal(user)}
-                >
-                  Delete
-                </Button>
-              </Table.Cell>
-            </Table.Row>
-          ))}
+          {/* Xóa */}
+          <Button
+            color="failure"
+            onClick={() => openDeleteConfirmModal(user)}
+          >
+            Delete
+          </Button>
+        </>
+      )}
+    </Table.Cell>
+  </Table.Row>
+))}
+
         </Table.Body>
       </Table>
 
