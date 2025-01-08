@@ -1,0 +1,10 @@
+{
+    "username": "Thien",
+    "email": "ducthien19012004@gmail.com",
+    "password": "Admin123", 
+    "avatar": "https://example.com/avatar.jpg", 
+    "role": "admin",
+    "isActivated": true,
+    "status": "active"
+  }
+  

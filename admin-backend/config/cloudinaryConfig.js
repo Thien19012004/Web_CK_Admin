@@ -18,6 +18,15 @@ const storage = new CloudinaryStorage({
   },
 });
 
-const upload = multer({ storage });
+const avatarStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'avatars', // Thư mục lưu trữ trên Cloudinary cho avatar
+    allowedFormats: ['jpg', 'png', 'jpeg'], // Định dạng ảnh được phép
+  },
+});
 
-module.exports = { cloudinary, upload };
+const upload = multer({ storage });
+const uploadAvatar = multer({ storage: avatarStorage });
+
+module.exports = { cloudinary, upload, uploadAvatar };
