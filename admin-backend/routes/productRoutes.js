@@ -19,7 +19,7 @@ const {
 router.get('/', getProducts);              // Lấy danh sách sản phẩm
 
 router.get('/filter', filterProducts); // API lọc sản phẩm
-router.get("/sort", sortProducts); // Route sắp xếp sản phẩm
+//outer.get("/sort", sortProducts); // Route sắp xếp sản phẩm
 router.get("/paging", getPagedProducts); // API phân trang sản phẩm
 
 

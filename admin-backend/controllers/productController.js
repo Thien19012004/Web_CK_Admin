@@ -179,7 +179,7 @@ const sortProducts = async (req, res) => {
     const { sortBy, order } = req.query; // Lấy thông tin sortBy và order từ query string
 
     // Kiểm tra tham số hợp lệ
-    const validSortBy = ["createdAt", "price"];
+    const validSortBy = ["createdAt", "price", ];
     if (!validSortBy.includes(sortBy)) {
       return res.status(400).json({ message: "Invalid sort field" });
     }
@@ -218,20 +218,70 @@ const getPagedProducts = async (req, res) => {
 
     const skip = (page - 1) * limit;
 
-    // **Xử lý sắp xếp**
+    // Xử lý sắp xếp
     let sort = {};
     if (sortBy && order) {
       sort[sortBy] = order === "desc" ? -1 : 1;
     }
 
-    // Truy vấn dữ liệu
-    const products = await Product.find(filter)
-      .sort(sort) // Áp dụng sắp xếp (nếu có)
-      .skip(skip)
-      .limit(Number(limit));
+    // Sử dụng aggregation để tính toán `totalPurchase`
+    const products = await Product.aggregate([
+      // Áp dụng bộ lọc
+      { $match: filter },
 
+      // Lookup để lấy dữ liệu đơn hàng liên quan
+      {
+        $lookup: {
+          from: "orders", // Collection orders
+          localField: "_id", // ID sản phẩm
+          foreignField: "products.productId", // Liên kết qua productId trong đơn hàng
+          as: "orders",
+        },
+      },
+
+      // Tính toán `totalPurchase` (tổng số lượng sản phẩm đã bán)
+      {
+        $addFields: {
+          totalPurchase: {
+            $sum: {
+              $map: {
+                input: "$orders", // Lặp qua tất cả các đơn hàng
+                as: "order",
+                in: {
+                  $sum: {
+                    $map: {
+                      input: "$$order.products", // Lặp qua các sản phẩm trong đơn hàng
+                      as: "product",
+                      in: {
+                        $cond: [
+                          { $eq: ["$$product.productId", "$_id"] }, // Nếu productId khớp với sản phẩm hiện tại
+                          "$$product.quantity", // Lấy quantity
+                          0, // Không khớp thì trả về 0
+                        ],
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+
+      // Sắp xếp theo yêu cầu
+      ...(sortBy && order
+        ? [{ $sort: { [sortBy]: order === "desc" ? -1 : 1 } }]
+        : []),
+
+      // Phân trang
+      { $skip: skip },
+      { $limit: Number(limit) },
+    ]);
+
+    // Tính tổng số sản phẩm
     const total = await Product.countDocuments(filter);
 
+    // Gửi dữ liệu về client
     res.status(200).json({
       data: products,
       currentPage: Number(page),
@@ -243,6 +293,7 @@ const getPagedProducts = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch products" });
   }
 };
+
 
 // Xác thực dữ liệu đầu vào
 const validateProductInput = (data) => {

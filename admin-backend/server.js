@@ -4,6 +4,7 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 const authRoutes = require("./routes/auth"); // Import route auth
 const profileRoutes = require('./routes/profileRoutes'); // Thêm profile route
+const orderRoutes = require('./routes/orderRoutes');
 
 dotenv.config();
 connectDB();
@@ -25,6 +26,7 @@ app.use('/api/products', require('./routes/productRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use("/api/auth", authRoutes); // Gắn auth routes vào /api/auth
 app.use('/profile', profileRoutes); // Đăng ký route profile
+app.use('/orders', orderRoutes);
 
 
 // Khởi động server
