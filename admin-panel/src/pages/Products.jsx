@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa"; // Import icon chỉnh sửa
 import { FaTrash } from "react-icons/fa"; // Icon thùng rác
 import { FaImages } from "react-icons/fa"; // Icon cho hình ảnh
-
+import axios from "axios";
 import {
   fetchProducts,
   addProduct,
@@ -87,6 +87,8 @@ const Products = () => {
       setLoading(false);
     }
   };
+  
+  
   
   
   
@@ -224,6 +226,7 @@ useEffect(() => {
   
   // **Cập nhật sản phẩm**
   const handleUpdateProduct = async (id, updatedData) => {
+    console.log(updatedData);
     const errors = {};
   
     // **Kiểm tra dữ liệu đầu vào**
@@ -261,10 +264,12 @@ useEffect(() => {
       setFormErrors(errors); // Hiển thị lỗi trên modal
       return; // Không đóng modal
     }
-  
+    console.log(11111);
+      
     // Nếu không có lỗi, tiến hành cập nhật
     try {
       await updateProduct(id, updatedData); // Gọi API cập nhật
+      console.log(updatedData);
       loadPagedProducts(currentPage); // Tải lại dữ liệu
       handleCloseDrawer(); // Đóng modal chỉ khi cập nhật thành công
     } catch (error) {
@@ -364,6 +369,7 @@ useEffect(() => {
       <option value="">No Sort</option> {/* Mặc định */}
       <option value="createdAt">Creation Time</option>
       <option value="price">Price</option>
+      <option value="totalPurchase">Total Purchase</option>
     </select>
 
     {/* Order Field */}
@@ -387,7 +393,6 @@ useEffect(() => {
 
 
 
-
       {/* Danh sách sản phẩm */}
       <Table hoverable>
         <TableHead>
@@ -396,6 +401,7 @@ useEffect(() => {
           <TableHeadCell className="font-bold">Gender</TableHeadCell>
           <TableHeadCell className="font-bold">Price</TableHeadCell>
           <TableHeadCell className="font-bold">Sizes</TableHeadCell>
+          <TableHeadCell className="font-bold">Total Purchase</TableHeadCell>
           <TableHeadCell className="font-bold">Description</TableHeadCell>
           <TableHeadCell className="font-bold">Status</TableHeadCell>
           <TableHeadCell>
@@ -415,6 +421,7 @@ useEffect(() => {
               <TableCell>{product.gender}</TableCell>
               <TableCell>${product.price}</TableCell>
               <TableCell>{product.sizes.join(", ")}</TableCell>
+              <TableCell>{product.totalPurchase || 0}</TableCell>
               <TableCell>{product.desc}</TableCell>
               <TableCell>{product.status}</TableCell>
               <TableCell className="flex space-x-2">

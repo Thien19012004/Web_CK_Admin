@@ -1,24 +1,24 @@
 import React from "react";
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
-
-const data = [
-  { name: "Jan", sales: 400 },
-  { name: "Feb", sales: 300 },
-  { name: "Mar", sales: 500 },
-  { name: "Apr", sales: 200 },
-];
-
+import SalesThisWeek from "../components/SalesThisWeek"; // Import SalesThisWeek component
+import TopProductsByRevenue from "../components/TopProductsByRevenue";
 const Dashboard = () => {
   return (
-    <div>
-      <h2>Sales Statistics</h2>
-      <LineChart width={600} height={300} data={data}>
-        <Line type="monotone" dataKey="sales" stroke="#8884d8" />
-        <CartesianGrid stroke="#ccc" />
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-      </LineChart>
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-4">Dashboard</h2>
+
+      {/* Phần doanh thu trong tuần */}
+      <div className="mb-6">
+        <SalesThisWeek />
+      </div>
+
+      {/* Thêm các thành phần khác trong Dashboard nếu cần */}
+      <div className="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
+        <h3 className="text-xl font-bold mb-4">Other Dashboard Statistics</h3>
+        
+      </div>
+      <div className="mb-6">
+        <TopProductsByRevenue />
+      </div>
     </div>
   );
 };

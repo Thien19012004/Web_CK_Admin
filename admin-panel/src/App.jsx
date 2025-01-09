@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
+import Navbar from "./components/Navbar"; // Import Navbar
 import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
 import Users from "./pages/Users";
+import Orders from "./pages/Orders";
+import Profile from "./pages/Profile";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
-import Profile from "./pages/Profile";
 
 // Protected Route để kiểm tra trạng thái đăng nhập
 const ProtectedRoute = ({ children }) => {
@@ -25,94 +27,77 @@ const App = () => {
 
   return (
     <Router>
-      <div style={{ display: "flex", height: "100vh" }}>
-        {/* Chỉ hiển thị Sidebar nếu đã đăng nhập */}
-        
-        <div style={{ flex: 1, padding: "0px", overflowY: "auto" }}>
-          <Routes>
-            {/* Trang chính hướng về Login */}
-            <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
+      <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+        {/* Navbar */}
+        {isAuthenticated && <Navbar />}
 
+        {/* Bố trí Sidebar và nội dung */}
+        <div style={{ display: "flex", flex: 1, marginTop: isAuthenticated ? "60px" : "0" }}>
+          {/* Sidebar */}
+          {isAuthenticated && (
+            <div style={{ width: "250px", position: "fixed", top: "60px", left: 0 }}>
+              <Sidebar />
+            </div>
+          )}
 
-            {/* Đăng nhập và Đăng ký */}
-            <Route path="/login" element={isAuthenticated?<Sidebar />&&<LoginForm />:<LoginForm/>} />
-            <Route path="/register" element={<RegisterForm />} />
+          {/* Nội dung chính */}
+          <div
+            style={{
+              flex: 1,
+              marginLeft: isAuthenticated ? "250px" : "0",
+            }}
+          >
+            <Routes>
+              {/* Trang chính hướng về Login */}
+              <Route path="/" element={<Navigate to="/dashboard" />} />
 
-            {/* Các trang yêu cầu đăng nhập */}
-            <Route
+              {/* Đăng nhập và Đăng ký */}
+              <Route path="/login" element={<LoginForm setIsAuthenticated={setIsAuthenticated} />} />
+              <Route path="/register" element={<RegisterForm />} />
+
+              {/* Các trang yêu cầu đăng nhập */}
+              <Route
                 path="/dashboard"
                 element={
                   <ProtectedRoute>
-                    <div className="div1" style={{ display: "flex", height: "100vh", padding: "0px", margin: "0px" }}>
-                      {/* Sidebar chiếm một phần cố định bên trái */}
-                      <div style={{ width: "250px", flexShrink: 0 }}>
-                        <Sidebar />
-                      </div>
-                      
-                      {/* Dashboard chiếm phần còn lại */}
-                      <div style={{ flexGrow: 1, padding: "20px", overflowY: "auto" }}>
-                        <Dashboard />
-                      </div>
-                    </div>
+                    <Dashboard />
                   </ProtectedRoute>
                 }
               />
-            <Route
-              path="/products"
-              element={
-                <ProtectedRoute>
-                  <div className="div1" style={{ display: "flex", height: "100vh", padding: "0px", margin: "0px" }}>
-                      {/* Sidebar chiếm một phần cố định bên trái */}
-                      <div style={{ width: "250px", flexShrink: 0 }}>
-                        <Sidebar />
-                      </div>
-                      
-                      {/* Dashboard chiếm phần còn lại */}
-                      <div style={{ flexGrow: 1, padding: "20px", overflowY: "auto" }}>
-                        <Products />
-                      </div>
-                    </div>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/users"
-              element={
-                <ProtectedRoute>
-                  <div className="div1" style={{ display: "flex", height: "100vh", padding: "0px", margin: "0px" }}>
-                      {/* Sidebar chiếm một phần cố định bên trái */}
-                      <div style={{ width: "250px", flexShrink: 0 }}>
-                        <Sidebar />
-                      </div>
-                      
-                      {/* Dashboard chiếm phần còn lại */}
-                      <div style={{ flexGrow: 1, padding: "20px", overflowY: "auto" }}>
-                        <Users />
-                      </div>
-                    </div>
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <div className="div1" style={{ display: "flex", height: "100vh", padding: "0px", margin: "0px" }}>
-                      {/* Sidebar chiếm một phần cố định bên trái */}
-                      <div style={{ width: "250px", flexShrink: 0 }}>
-                        <Sidebar />
-                      </div>
-                      
-                      {/* Dashboard chiếm phần còn lại */}
-                      <div style={{ flexGrow: 1, padding: "20px", overflowY: "auto" }}>
-                        <Profile />
-                      </div>
-                    </div>
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
+              <Route
+                path="/products"
+                element={
+                  <ProtectedRoute>
+                    <Products />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/users"
+                element={
+                  <ProtectedRoute>
+                    <Users />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/orders"
+                element={
+                  <ProtectedRoute>
+                    <Orders />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+          </div>
         </div>
       </div>
     </Router>

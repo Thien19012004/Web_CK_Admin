@@ -1,31 +1,76 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Sidebar } from "flowbite-react";
+import {
+  HiChartPie,
+  HiShoppingBag,
+  HiUsers,
+  HiClipboard,
+  HiPencil,
+  HiInformationCircle,
+} from "react-icons/hi";
 
-const Sidebar = () => {
+const CustomSidebar = () => {
+  const [currentPage, setCurrentPage] = useState("");
+
+  useEffect(() => {
+    setCurrentPage(window.location.pathname); // Lấy đường dẫn hiện tại
+  }, []);
+
   return (
-    <div style={{ width: "200px", background: "#333", color: "#fff", height: "100vh" }}>
-      <h2>Admin Panel</h2>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/" style={{ color: "#fff", textDecoration: "none" }}>Dashboard</Link>
-          </li>
-          <li>
-            <Link to="/products" style={{ color: "#fff", textDecoration: "none" }}>Products</Link>
-          </li>
-          <li>
-            <Link to="/users" style={{ color: "#fff", textDecoration: "none" }}>Users</Link>
-          </li>
-          <li>
-            <Link to="/orders" style={{ color: "#fff", textDecoration: "none" }}>Orders</Link>
-          </li>
-          <li>
-            <Link to="/profile" style={{ color: "#fff", textDecoration: "none" }}>Profile</Link>
-          </li>
-        </ul>
-      </nav>
-    </div>
+    <Sidebar aria-label="Custom Sidebar">
+      <div className="flex h-full flex-col justify-between py-2">
+        <div>
+          <Sidebar.Items>
+            <Sidebar.ItemGroup>
+              <Sidebar.Item
+                href="/"
+                icon={HiChartPie}
+                className={currentPage === "/" ? "bg-gray-100 dark:bg-gray-700" : ""}
+              >
+                Dashboard
+              </Sidebar.Item>
+              <Sidebar.Item
+                href="/products"
+                icon={HiShoppingBag}
+                className={currentPage === "/products" ? "bg-gray-100 dark:bg-gray-700" : ""}
+              >
+                Products
+              </Sidebar.Item>
+              <Sidebar.Item
+                href="/users"
+                icon={HiUsers}
+                className={currentPage === "/users" ? "bg-gray-100 dark:bg-gray-700" : ""}
+              >
+                Users
+              </Sidebar.Item>
+              <Sidebar.Item
+                href="/orders"
+                icon={HiClipboard}
+                className={currentPage === "/order" ? "bg-gray-100 dark:bg-gray-700" : ""}
+              >
+                Orders
+              </Sidebar.Item>
+              <Sidebar.Item
+                href="/profile"
+                icon={HiPencil}
+                className={currentPage === "/profile" ? "bg-gray-100 dark:bg-gray-700" : ""}
+              >
+                Profile
+              </Sidebar.Item>
+            </Sidebar.ItemGroup>
+            <Sidebar.ItemGroup>
+              <Sidebar.Item
+                href="https://github.com"
+                icon={HiInformationCircle}
+              >
+                Help
+              </Sidebar.Item>
+            </Sidebar.ItemGroup>
+          </Sidebar.Items>
+        </div>
+      </div>
+    </Sidebar>
   );
 };
 
-export default Sidebar;
+export default CustomSidebar;
