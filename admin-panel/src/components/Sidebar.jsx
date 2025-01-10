@@ -8,6 +8,7 @@ import {
   HiPencil,
   HiInformationCircle,
 } from "react-icons/hi";
+import { NavLink } from "react-router-dom";
 
 const CustomSidebar = () => {
   const [currentPage, setCurrentPage] = useState("");
@@ -23,45 +24,62 @@ const CustomSidebar = () => {
           <Sidebar.Items>
             <Sidebar.ItemGroup>
               <Sidebar.Item
-                href="/"
+                as={NavLink}
+                to="/"
                 icon={HiChartPie}
-                className={currentPage === "/" ? "bg-gray-100 dark:bg-gray-700" : ""}
+                className={({ isActive }) =>
+                  isActive ? "bg-gray-100 dark:bg-gray-700" : ""
+                }
               >
                 Dashboard
               </Sidebar.Item>
               <Sidebar.Item
-                href="/products"
+                as={NavLink}
+                to="/products"
                 icon={HiShoppingBag}
-                className={currentPage === "/products" ? "bg-gray-100 dark:bg-gray-700" : ""}
+                className={({ isActive }) =>
+                  isActive ? "bg-gray-100 dark:bg-gray-700" : ""
+                }
               >
                 Products
               </Sidebar.Item>
               <Sidebar.Item
-                href="/users"
+                as={NavLink}
+                to="/users"
                 icon={HiUsers}
-                className={currentPage === "/users" ? "bg-gray-100 dark:bg-gray-700" : ""}
+                className={({ isActive }) =>
+                  isActive ? "bg-gray-100 dark:bg-gray-700" : ""
+                }
               >
                 Users
               </Sidebar.Item>
               <Sidebar.Item
-                href="/orders"
+                as={NavLink}
+                to="/orders"
                 icon={HiClipboard}
-                className={currentPage === "/order" ? "bg-gray-100 dark:bg-gray-700" : ""}
+                className={({ isActive }) =>
+                  isActive ? "bg-gray-100 dark:bg-gray-700" : ""
+                }
               >
                 Orders
               </Sidebar.Item>
               <Sidebar.Item
-                href="/profile"
+                as={NavLink}
+                to="/profile"
                 icon={HiPencil}
-                className={currentPage === "/profile" ? "bg-gray-100 dark:bg-gray-700" : ""}
+                className={({ isActive }) =>
+                  isActive ? "bg-gray-100 dark:bg-gray-700" : ""
+                }
               >
                 Profile
               </Sidebar.Item>
             </Sidebar.ItemGroup>
             <Sidebar.ItemGroup>
               <Sidebar.Item
+                as="a"
                 href="https://github.com"
                 icon={HiInformationCircle}
+                target="_blank"
               >
                 Help
               </Sidebar.Item>

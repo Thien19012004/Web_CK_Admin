@@ -1,45 +1,45 @@
 import React, { useEffect, useState } from "react";
 import { Navbar, Dropdown } from "flowbite-react";
+import { NavLink } from "react-router-dom";
 import axios from "axios";
-const CustomNavbar = () => {
-  const [user, setUser] = useState({ username: "Admin", avatar: null });
 
-//   useEffect(() => {
-//     const fetchUserInfo = async () => {
-//       try {
-//         const token = localStorage.getItem('token');
-//         if (token) {
-//           const res = await axios.get('http://localhost:5000/profile', {
-//             headers: {
-//               Authorization: `Bearer ${token}`,
-//             },
-//             withCredentials: true, // Nếu server yêu cầu cookie
-//           });
-  
-//           setUser({
-//             username: res.data.username || '',
-//             avatar: res.data.avatar || 'https://via.placeholder.com/40?text=Avatar', // Avatar mặc định nếu không có
-//             email: res.data.email || '',
-//             role: res.data.role || 'user',
-//             registrationDate: res.data.registrationDate || 'N/A',
-//           });
-//         }
-//       } catch (error) {
-//         console.error('Error fetching user info:', error);
-//       }
-//     };
-  
-//     fetchUserInfo();
-//   }, []);
-  
+const CustomNavbar = () => {
+  const [user, setUser] = useState({
+    username: "Admin",
+    avatar: "https://via.placeholder.com/40?text=Avatar", // Avatar mặc định
+  });
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const res = await axios.get("http://localhost:5000/profile", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            withCredentials: true, // Nếu server yêu cầu cookie
+          });
+
+          setUser({
+            username: res.data.username || "Admin",
+            avatar: res.data.avatar || "https://via.placeholder.com/40?text=Avatar", // Avatar mặc định
+            email: res.data.email || "",
+            role: res.data.role || "user",
+            registrationDate: res.data.registrationDate || "N/A",
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token"); // Xóa token để logout
     window.location.href = "/login"; // Chuyển hướng đến trang login
-  };
-
-  const handleEditProfile = () => {
-    window.location.href = "/profile"; // Chuyển đến trang chỉnh sửa profile
   };
 
   return (
@@ -47,7 +47,7 @@ const CustomNavbar = () => {
       <div className="w-full p-3 lg:px-5 lg:pl-3">
         <div className="flex items-center justify-between">
           {/* Brand Logo */}
-          <Navbar.Brand href="/">
+          <Navbar.Brand as={NavLink} to="/">
             <img
               alt="Logo"
               src="/images/logo.svg"
@@ -60,15 +60,17 @@ const CustomNavbar = () => {
 
           {/* Admin Dropdown */}
           <div className="flex items-center gap-3">
-            {/* <img
-              src={
-                "https://via.placeholder.com/40?text=Avatar" // Placeholder nếu không có ảnh
-              }
+            {/* Hiển thị Avatar và tên người dùng */}
+            <img
+              src={user.avatar}
               alt="User Avatar"
               className="w-10 h-10 rounded-full object-cover"
-            /> */}
-            <Dropdown label={`Admin`} inline>
-              <Dropdown.Item onClick={handleEditProfile}>Edit Profile</Dropdown.Item>
+            />
+            <Dropdown label={user.username} inline>
+              {/* Sử dụng NavLink cho Edit Profile */}
+              <Dropdown.Item as={NavLink} to="/profile">
+                Edit Profile
+              </Dropdown.Item>
               <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
             </Dropdown>
           </div>

@@ -45,6 +45,7 @@ const App = () => {
             style={{
               flex: 1,
               marginLeft: isAuthenticated ? "250px" : "0",
+              marginTop: 10,
             }}
           >
             <Routes>
