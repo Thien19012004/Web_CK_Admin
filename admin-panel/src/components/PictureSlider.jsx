@@ -5,7 +5,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Navigation, Pagination } from "swiper/modules";
 import { uploadImage, updateProductImages } from "../services/api";
-import "./PictureSlider.css";
+import "../styles/PictureSlider.css";
 
 const PictureSlider = ({ productId, images = [], onClose }) => {
   const [imageList, setImageList] = useState(images); // Danh sách ảnh
@@ -78,7 +78,7 @@ const PictureSlider = ({ productId, images = [], onClose }) => {
       }
   
       const data = await res.json();
-      console.log("Updated product:", data); // Log dữ liệu từ backend
+      //console.log("Updated product:", data); // Log dữ liệu từ backend
   
       // Cập nhật giao diện với ảnh mới
       setImageList(data.img || []);

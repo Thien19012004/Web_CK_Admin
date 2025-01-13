@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
 import { Dropdown } from "flowbite-react";
+import { getBaseUrl } from "../utils/getBaseUrl";
 
 const TopProductsByRevenue = () => {
   const [topProducts, setTopProducts] = useState([]);
@@ -13,7 +14,7 @@ const TopProductsByRevenue = () => {
         setLoading(true);
         const token = localStorage.getItem("token");
         const res = await fetch(
-          `http://localhost:5000/orders/report/top-products?timeframe=${timeframe}`,
+          `${getBaseUrl()}/orders/report/top-products?timeframe=${timeframe}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

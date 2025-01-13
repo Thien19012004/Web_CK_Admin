@@ -41,3 +41,8 @@
 .read-the-docs {
   color: #888;
 }
+
+.avatar-img{
+  border-radius: 50%;
+  width: 1000px;
+}

@@ -1,8 +1,10 @@
+import { GridApiContext } from "@mui/x-data-grid";
 import axios from "axios";
+import { getBaseUrl } from "../utils/getBaseUrl";
 
 // Tạo instance axios
 const api = axios.create({
-  baseURL: "http://localhost:5000/api", // Đổi lại nếu backend chạy ở port khác
+  baseURL: `${getBaseUrl()}/api`, // Đổi lại nếu backend chạy ở port khác
 });
 
 // Các API
@@ -63,17 +65,17 @@ export const getProductImages = (id) => api.get(`/products/${id}/images`);
 // Lọc sản phẩm
 export const fetchFilteredProducts = async (filters) => {
   const query = new URLSearchParams(filters).toString(); // Chuyển object thành query string
-  return await axios.get(`/api/products/filter?${query}`); // Gọi API
+  return await api.get(`/products/filter?${query}`); // Gọi API
 };
 
 export const fetchSortedProducts = async (sort) => {
   const query = new URLSearchParams(sort).toString(); // Chuyển object sort thành query string
-  return await axios.get(`/api/products/sort?${query}`); // Gọi API backend
+  return await api.get(`/products/sort?${query}`); // Gọi API backend
 };
 
 // Gọi API phân trang sản phẩm
 export const fetchPagedProducts = async (query) => {
-  return await axios.get(`/api/products/paging?${query}`);
+  return await api.get(`/products/paging?${query}`);
 };
 
 export const fetchUsers = async (query) => {
@@ -86,5 +88,32 @@ export const deleteUser = (id) => api.delete(`/users/${id}`);
 export const updateUserStatus = async (id, status) => {
   return await api.put(`/users/${id}/status`, {status} ); // Sử dụng đúng URL và body JSON
 };
+
+export const fetchUserInfo = async (token) => {
+  if (token) {
+    try {
+      // Sử dụng `api` thay vì axios.get trực tiếp
+      const res = await api.get("/profile", {
+        headers: {
+          Authorization: `Bearer ${token}`, // Đính kèm token vào header
+        },
+      });
+      return res;
+    } catch (error) {
+      console.error("Error fetching user info:", error);
+      throw error;
+    }
+  } else {
+    throw new Error("No token provided");
+  }
+};
+
+export const loginUser = async (email, password) => {
+  return await api.post("/auth/login", {
+    email,
+    password,
+  });
+};
+
 
 export default api;

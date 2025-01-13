@@ -2,14 +2,11 @@ import React, { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa"; // Import icon chỉnh sửa
 import { FaTrash } from "react-icons/fa"; // Icon thùng rác
 import { FaImages } from "react-icons/fa"; // Icon cho hình ảnh
-import axios from "axios";
 import {
   fetchProducts,
   addProduct,
   updateProduct,
   deleteProduct,
-  fetchFilteredProducts,
-  fetchSortedProducts,
   fetchPagedProducts,
 } from "../services/api";
 
@@ -24,9 +21,9 @@ import {
   TableHead,
   TableHeadCell,
   TableRow,
-  Button,
-  Modal,
 } from "flowbite-react";
+
+import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 
 const Products = () => {
   const [products, setProducts] = useState([]); // Danh sách sản phẩm
@@ -88,17 +85,12 @@ const Products = () => {
     }
   };
   
-  
-  
-  
-  
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       loadPagedProducts(page); // Giữ nguyên trạng thái Filter và Sort
     }
   };
   
-
 useEffect(() => {
   loadPagedProducts(1); // Tải lại từ trang 1 khi Filter hoặc Sort thay đổi
 }, [filters, sort]);
@@ -118,51 +110,6 @@ useEffect(() => {
     }
   };
   
-
-  //**Load danh sách sản phẩm**
-  const loadProducts = async () => {
-    try {
-      const { data } = await fetchProducts();
-      setProducts(data);
-    } catch (error) {
-      console.error("Failed to fetch products:", error);
-    }
-  };
-
-  // useEffect(() => {
-  //   loadProducts();
-  // }, []);
-
-
-  // **Lọc sản phẩm**
-  // const handleFilter = async () => {
-  //   try {
-  //     const { data } = await fetchFilteredProducts(filters); // Gọi API lọc
-  //     setProducts(data);
-  //   } catch (error) {
-  //     console.error("Failed to filter products:", error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   loadPagedProducts(1);
-  // }, []);
-
-  // Sắp xếp sản phẩm
-  // const handleSort = async () => {
-  //   try {
-  //     const { data } = await fetchSortedProducts(sort); // Gọi API sắp xếp
-  //     setProducts(data);
-  //   } catch (error) {
-  //     console.error("Failed to sort products:", error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   loadPagedProducts(1);
-  // }, []);
-
-
   // **Mở Drawer chỉnh sửa sản phẩm**
   const handleOpenDrawer = (product) => {
     setSelectedProduct(product);
@@ -175,97 +122,9 @@ useEffect(() => {
     setShowDrawer(false);
   };
 
-  const validateProductInput = (data) => {
-    const errors = {}; // Khởi tạo object chứa lỗi
-  
-    // Kiểm tra tên sản phẩm
-    if (!data.name || data.name.trim() === "") {
-      errors.name = "Product name is required.";
-    }
-  
-    // Kiểm tra giá sản phẩm
-    if (!data.price || isNaN(data.price) || Number(data.price) <= 0) {
-      errors.price = "Price must be a positive number.";
-    }
-  
-    // Kiểm tra mô tả sản phẩm
-    if (!data.desc || data.desc.trim() === "") {
-      errors.desc = "Description is required.";
-    }
-  
-    // Kiểm tra giới tính
-    const validGenders = ["MEN", "WOMEN"];
-    if (!data.gender || !validGenders.includes(data.gender)) {
-      errors.gender = "Gender must be 'MEN' or 'WOMEN'.";
-    }
-  
-    // Kiểm tra danh mục sản phẩm
-    const validCategories = ["Running", "Casual", "Sports", "Formal"];
-    if (!data.category || !validCategories.includes(data.category)) {
-      errors.category = "Category is invalid.";
-    }
-  
-    // Kiểm tra sizes
-    const validSizes = ["40", "41", "42", "43", "44"];
-    if (
-      !data.sizes ||
-      !Array.isArray(data.sizes) ||
-      data.sizes.some((size) => !validSizes.includes(size))
-    ) {
-      errors.sizes = "Sizes must be valid options: 40, 41, 42, 43, 44.";
-    }
-  
-    // Kiểm tra trạng thái
-    const validStatuses = ["In Stock", "Out Of Stock"];
-    if (!data.status || !validStatuses.includes(data.status)) {
-      errors.status = "Status must be 'In Stock' or 'Out Of Stock'.";
-    }
-  
-    return errors; // Trả về danh sách lỗi
-  };
-  
   // **Cập nhật sản phẩm**
   const handleUpdateProduct = async (id, updatedData) => {
-    console.log(updatedData);
-    const errors = {};
-  
-    // **Kiểm tra dữ liệu đầu vào**
-    if (!updatedData.name || updatedData.name.trim() === "") {
-      errors.name = "Product name is required";
-    }
-    if (!updatedData.price || isNaN(updatedData.price) || updatedData.price <= 0) {
-      errors.price = "Price must be a positive number";
-    }
-    if (!updatedData.desc || updatedData.desc.trim() === "") {
-      errors.desc = "Description is required";
-    }
-    if (!updatedData.gender || !["MEN", "WOMEN"].includes(updatedData.gender)) {
-      errors.gender = "Gender must be 'MEN' or 'WOMEN'";
-    }
-    if (!updatedData.category || updatedData.category.trim() === "") {
-      errors.category = "Category is required";
-    }
-    if (
-      !updatedData.sizes ||
-      !Array.isArray(updatedData.sizes) ||
-      updatedData.sizes.some((size) => !["40", "41", "42", "43", "44"].includes(size))
-    ) {
-      errors.sizes = "Invalid sizes selected";
-    }
-    if (
-      !updatedData.status ||
-      !["On Stock", "Out Of Stock", "Suspend"].includes(updatedData.status)
-    ) {
-      errors.status = "Status must be 'In Stock' or 'Out Of Stock'";
-    }
-  
-    // **Kiểm tra có lỗi hay không**
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors); // Hiển thị lỗi trên modal
-      return; // Không đóng modal
-    }
-    console.log(11111);
-      
+    //console.log(updatedData);
     // Nếu không có lỗi, tiến hành cập nhật
     try {
       await updateProduct(id, updatedData); // Gọi API cập nhật
@@ -278,9 +137,6 @@ useEffect(() => {
     }
   };
   
-  
-  
-
   // **Mở Modal xác nhận xóa**
   const handleOpenDeleteModal = (product) => {
     setProductToDelete(product);
@@ -298,7 +154,7 @@ useEffect(() => {
     try {
       if (productToDelete) {
         await deleteProduct(productToDelete._id);
-        loadProducts();
+        loadPagedProducts(currentPage);
         handleCloseDeleteModal();
       }
     } catch (error) {
@@ -390,9 +246,6 @@ useEffect(() => {
   </div>
 </div>
 
-
-
-
       {/* Danh sách sản phẩm */}
       <Table hoverable>
         <TableHead>
@@ -402,7 +255,7 @@ useEffect(() => {
           <TableHeadCell className="font-bold">Price</TableHeadCell>
           <TableHeadCell className="font-bold">Sizes</TableHeadCell>
           <TableHeadCell className="font-bold">Total Purchase</TableHeadCell>
-          <TableHeadCell className="font-bold">Description</TableHeadCell>
+          {/* <TableHeadCell className="font-bold">Description</TableHeadCell> */}
           <TableHeadCell className="font-bold">Status</TableHeadCell>
           <TableHeadCell>
             <span className="sr-only">Actions</span>
@@ -422,7 +275,7 @@ useEffect(() => {
               <TableCell>${product.price}</TableCell>
               <TableCell>{product.sizes.join(", ")}</TableCell>
               <TableCell>{product.totalPurchase || 0}</TableCell>
-              <TableCell>{product.desc}</TableCell>
+              {/* <TableCell>{product.desc}</TableCell> */}
               <TableCell>{product.status}</TableCell>
               <TableCell className="flex space-x-2">
                 {/* Nút Update */}
@@ -505,26 +358,13 @@ useEffect(() => {
   />
 )}
 
-
-
       {/* Modal xác nhận xóa */}
-      <Modal show={showDeleteModal} onClose={handleCloseDeleteModal}>
-        <Modal.Header>Confirm Deletion</Modal.Header>
-        <Modal.Body>
-          <p>
-            Are you sure you want to delete the product{" "}
-            <strong>{productToDelete?.name}</strong>?
-          </p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button color="red" onClick={handleDeleteConfirmed}>
-            Confirm
-          </Button>
-          <Button color="gray" onClick={handleCloseDeleteModal}>
-            Cancel
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <ConfirmDeleteModal
+        showDeleteModal={showDeleteModal}
+        handleCloseDeleteModal={handleCloseDeleteModal}
+        handleDeleteConfirmed={handleDeleteConfirmed}
+        productToDelete={productToDelete}
+      />
 
       {/* Picture Slider */}
       {showSlider && (

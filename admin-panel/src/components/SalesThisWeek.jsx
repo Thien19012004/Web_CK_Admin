@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Dropdown } from "flowbite-react";
 import SalesChart from "./SalesChart";
-
+import { getBaseUrl } from "../utils/getBaseUrl";
 const SalesThisWeek = () => {
   const [salesData, setSalesData] = useState([]); // Doanh thu
   const [categories, setCategories] = useState([]); // Danh mục (ngày/tháng)
@@ -13,8 +13,9 @@ const SalesThisWeek = () => {
     const fetchSalesData = async () => {
       try {
         const token = localStorage.getItem("token");
+        console.log(getBaseUrl())
         const res = await fetch(
-          `http://localhost:5000/orders/report/sales-data?timeframe=${timeframe}`,
+          `${getBaseUrl()}/orders/report/sales-data?timeframe=${timeframe}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

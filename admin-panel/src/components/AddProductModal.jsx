@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { uploadImage, addProduct } from "../services/api";
+import { Alert } from "flowbite-react";
 
 const AddProductModal = ({ onClose, onProductAdded }) => {
   const [name, setName] = useState("");
@@ -8,14 +9,14 @@ const AddProductModal = ({ onClose, onProductAdded }) => {
   const [gender, setGender] = useState("");
   const [category, setCategory] = useState("");
   const [sizes, setSizes] = useState([]);
-  const [status, setStatus] = useState("In Stock"); // Thêm trường trạng thái
+  const [status, setStatus] = useState("On Stock"); // Thêm trường trạng thái
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
 
   // **Danh mục và Size**
   const categoryOptions = ["Running", "Casual", "Sports", "Formal"];
   const sizeOptions = ["40", "41", "42", "43", "44"];
-  const statusOptions = ["In Stock", "Out Of Stock"]; // Trạng thái sản phẩm
+  const statusOptions = ["On Stock", "Out Of Stock"]; // Trạng thái sản phẩm
 
   // **Xử lý chọn size**
   const handleSizeChange = (size) => {
@@ -54,7 +55,49 @@ const AddProductModal = ({ onClose, onProductAdded }) => {
       alert("Please fill all fields!");
       return;
     }
+    console.log('des', desc)
+    const errors = {}; // Kiểm tra dữ liệu đầu vào
   
+    if (!name || name.trim() === "") {
+      errors.name = "Product name is required";
+    }
+    if (!price || isNaN(price) || Number(price) <= 0) {
+      errors.price = "Price must be a positive number";
+    }
+    if (!gender || !["MEN", "WOMEN", "KIDS"].includes(gender)) {
+      errors.gender = "Invalid gender selected";
+    }
+    if (!category || category.trim() === "") {
+      errors.category = "Category is required";
+    }
+  
+    // Kiểm tra size
+    const sizeArray = Array.isArray(sizes) // Kiểm tra nếu là mảng
+  ? sizes // Giữ nguyên nếu đã là mảng
+  : sizes
+      .split(",") // Nếu là chuỗi thì tách ra mảng
+      .map((size) => size.trim()) // Loại bỏ khoảng trắng
+      .filter((size) => size); // Xóa phần tử rỗng
+
+    if (
+      !sizeArray.length ||
+      sizeArray.some((size) => !["40", "41", "42", "43", "44"].includes(size))
+    ) {
+      errors.sizes = "Invalid sizes selected";
+    }
+  
+    if (
+      !status ||
+      !["On Stock", "Out Of Stock", "Suspend"].includes(status)
+    ) {
+      errors.status = "Invalid status selected";
+    }
+  
+    // Nếu có lỗi, hiển thị lỗi và không đóng modal
+    if (Object.keys(errors).length > 0) {
+      alert(JSON.stringify(errors)); // Truyền lỗi ra giao diện
+      return;
+    }
     // Chuẩn bị dữ liệu JSON
     const productData = {
       name,
@@ -150,6 +193,7 @@ const AddProductModal = ({ onClose, onProductAdded }) => {
               <option value="">Select gender</option>
               <option value="MEN">Men</option>
               <option value="WOMEN">Women</option>
+              <option value="KIDS">Kid</option>
             </select>
           </div>
 

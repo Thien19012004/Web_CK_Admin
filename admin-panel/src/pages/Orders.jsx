@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import OrderDetailModal from "../components/OrderDetailModal"; // Import modal
+import { getBaseUrl } from "../utils/getBaseUrl";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -13,7 +14,7 @@ const Orders = () => {
     const fetchOrders = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5000/orders", {
+        const res = await axios.get(`${getBaseUrl()}/orders`, {
           headers: { Authorization: `Bearer ${token}` },
           params: { status: filterStatus },
         });
@@ -43,7 +44,7 @@ const Orders = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        `http://localhost:5000/orders/${orderId}/status`,
+        `${getBaseUrl()}/orders/${orderId}/status`,
         { status: newStatus },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -81,7 +82,7 @@ const Orders = () => {
       >
         <option value="">All</option>
         <option value="Pending">Pending</option>
-        <option value="Processing">Processing</option>
+        <option value="Processing">Canceled</option>
         <option value="Shipped">Shipped</option>
         <option value="Delivered">Delivered</option>
       </select>
@@ -111,14 +112,18 @@ const Orders = () => {
     onChange={(e) => handleStatusChange(order._id, e.target.value)}
     className={`px-2 py-1 rounded text-white ${
       order.status === "Delivered"
-        ? "bg-green-500"
-        : order.status === "Processing"
-        ? "bg-yellow-500"
-        : "bg-gray-500"
+        ? "bg-green-600 text-green-300"
+        : order.status === "Canceled"
+        ? "bg-red-900 text-red-500"
+        : order.status === "Shipped"
+        ? "bg-yellow-500 "
+        : order.status === "Pending"
+        ? "bg-blue-900 text-blue-500"
+        : "bg-red-900"
     }`}
   >
     <option value="Pending">Pending</option>
-    <option value="Processing">Processing</option>
+    <option value="Processing">Canceled</option>
     <option value="Shipped">Shipped</option>
     <option value="Delivered">Delivered</option>
   </select>

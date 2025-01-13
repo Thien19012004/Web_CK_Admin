@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Label, TextInput, Button } from "flowbite-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import { loginUser } from "../services/api";
 const LoginForm = ({ setIsAuthenticated }) => {
   const [email, setEmail] = useState(""); // State lưu email
   const [password, setPassword] = useState(""); // State lưu mật khẩu
@@ -14,11 +14,11 @@ const LoginForm = ({ setIsAuthenticated }) => {
     e.preventDefault(); // Ngăn hành vi mặc định của form
     try {
       // Gửi yêu cầu POST để kiểm tra đăng nhập
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
-        email,
-        password,
-      });
-
+      // const res = await axios.post("http://localhost:5000/api/auth/login", {
+      //   email,
+      //   password,
+      // });
+      const res = await loginUser(email, password);
       // Nếu đăng nhập thành công
       if (res.data.success) {
         // Lưu token vào localStorage

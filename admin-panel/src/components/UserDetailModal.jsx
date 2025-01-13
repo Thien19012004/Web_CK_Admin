@@ -28,17 +28,14 @@ const UserDetailModal = ({ showModal, onClose, selectedUser }) => {
         {selectedUser && (
           <div className="space-y-4">
             {/* Ảnh đại diện */}
-              <div className="flex justify-center items-center">
-                <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-300 flex items-center justify-center">
-                  <img
-                    src={
-                      selectedUser.avatar || "/default-avatar.png" // Avatar mặc định
-                    }
-                    alt="User Avatar"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </div>
+            <div className="flex justify-center items-center">
+            <img
+  src={selectedUser.avatar || "/default-avatar.png"}
+  alt="User Avatar"
+  className="w-24 h-24 object-cover"
+/>
+</div>
+
             {/* Thông tin người dùng */}
             <div className="space-y-2">
               <p>

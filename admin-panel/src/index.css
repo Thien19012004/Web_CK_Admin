@@ -64,7 +64,7 @@ button:hover {
 
 /* Ảnh trong bảng */
 img {
-  max-width: 50px; /* Giới hạn chiều rộng */
+  max-width: 200px; /* Giới hạn chiều rộng */
   height: auto;
   border-radius: 4px; /* Bo tròn nhẹ ảnh */
 }

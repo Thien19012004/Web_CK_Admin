@@ -1,15 +1,29 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+// Sử dụng process.env để đọc biến môi trường từ file .env
+import dotenv from "dotenv";
+dotenv.config();
 
 export default defineConfig({
-  plugins: [react()],
+  base: "/",
+ plugins: [react()],
+ preview: {
+  port: 8080,
+  strictPort: true,
+ },
   server: {
+    port: 8080,
     proxy: {
       '/api': {
-        target: 'http://localhost:5000', // Địa chỉ backend
+        target: process.env.NODE_ENV === "development"
+        ? process.env.VITE_DOMAIN
+        : process.env.VITE_DOMAIN_HOST,
         changeOrigin: true,
         secure: false,
       },
     },
+  strictPort: true,
+  host: true,
+  origin: "http://0.0.0.0:8080",
   },
 });

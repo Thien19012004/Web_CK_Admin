@@ -8,7 +8,6 @@ import Users from "./pages/Users";
 import Orders from "./pages/Orders";
 import Profile from "./pages/Profile";
 import LoginForm from "./components/LoginForm";
-import RegisterForm from "./components/RegisterForm";
 
 // Protected Route để kiểm tra trạng thái đăng nhập
 const ProtectedRoute = ({ children }) => {
@@ -45,7 +44,7 @@ const App = () => {
             style={{
               flex: 1,
               marginLeft: isAuthenticated ? "250px" : "0",
-              marginTop: 10,
+              marginTop: 20,
             }}
           >
             <Routes>
@@ -54,7 +53,6 @@ const App = () => {
 
               {/* Đăng nhập và Đăng ký */}
               <Route path="/login" element={<LoginForm setIsAuthenticated={setIsAuthenticated} />} />
-              <Route path="/register" element={<RegisterForm />} />
 
               {/* Các trang yêu cầu đăng nhập */}
               <Route

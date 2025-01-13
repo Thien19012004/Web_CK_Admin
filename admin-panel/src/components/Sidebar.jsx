@@ -75,14 +75,14 @@ const CustomSidebar = () => {
               </Sidebar.Item>
             </Sidebar.ItemGroup>
             <Sidebar.ItemGroup>
-              <Sidebar.Item
+              {/* <Sidebar.Item
                 as="a"
                 href="https://github.com"
                 icon={HiInformationCircle}
                 target="_blank"
               >
                 Help
-              </Sidebar.Item>
+              </Sidebar.Item> */}
             </Sidebar.ItemGroup>
           </Sidebar.Items>
         </div>
