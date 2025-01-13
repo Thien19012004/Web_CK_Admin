@@ -96,6 +96,7 @@ const updateProductImg = async (req, res) => {
 
 
 
+
 // Xóa sản phẩm
 const deleteProduct = async (req, res) => {
   try {
@@ -317,7 +318,7 @@ const validateProductInput = (data) => {
   if (!data.sizes || !Array.isArray(data.sizes) || data.sizes.length === 0) {
     errors.sizes = "At least one size is required";
   }
-  if (!data.status || !["In Stock", "Out Of Stock"].includes(data.status)) {
+  if (!data.status || !["On Stock", "Out Of Stock"].includes(data.status)) {
     errors.status = "Status must be 'In Stock' or 'Out Of Stock'";
   }
 

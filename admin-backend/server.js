@@ -15,7 +15,7 @@ const app = express();
 // Cấu hình CORS
 app.use(
     cors({
-        origin: 'http://localhost:5173', // Chỉ định origin cụ thể được phép truy cập
+        origin: 'http://localhost:8080', // Chỉ định origin cụ thể được phép truy cập
         credentials: true // Cho phép gửi cookie và thông tin xác thực
     })
 );
@@ -25,7 +25,7 @@ app.use(express.json());
 app.use('/api/products', require('./routes/productRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use("/api/auth", authRoutes); // Gắn auth routes vào /api/auth
-app.use('/profile', profileRoutes); // Đăng ký route profile
+app.use('/api/profile', profileRoutes); // Đăng ký route profile
 app.use('/orders', orderRoutes);
 
 
