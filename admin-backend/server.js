@@ -13,12 +13,8 @@ const app = express();
 
 // Middleware
 // Cấu hình CORS
-app.use(
-    cors({
-        origin: 'http://localhost:8080', // Chỉ định origin cụ thể được phép truy cập
-        credentials: true // Cho phép gửi cookie và thông tin xác thực
-    })
-);
+app.use(cors());
+
 app.use(express.json());
 
 // Routes

@@ -1,0 +1,42 @@
+services:
+  traefik:
+    image: "traefik:v2.6"
+    command:
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --providers.docker
+      - --api.insecure=false
+      - --certificatesresolvers.leresolver.acme.email=thuanlephuc152@gmail.com
+      - --certificatesresolvers.leresolver.acme.storage=/acme.json
+      - --certificatesresolvers.leresolver.acme.tlschallenge=true
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8081:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./acme.json:/acme.json"
+    networks:
+      - PrviNetwork
+    labels:
+      - "traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)"
+      - "traefik.http.routers.http-catchall.entrypoints=web"
+      - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
+
+      - "traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$jCcEv.Bi$$woR2mVbEDA0Ed870.vdX.1"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+
+      - "traefik.http.routers.traefik-secure.rule=Host(`traefik-dashboard.lptdevops.website`)"
+      - "traefik.http.routers.traefik-secure.entrypoints=websecure"
+      - "traefik.http.routers.traefik-secure.tls=true"
+      - "traefik.http.routers.traefik-secure.service=api@internal"
+      - "traefik.http.routers.traefik-secure.tls.certresolver=leresolver"
+
+      - "traefik.http.routers.traefik.rule=Host(`traefik-dashboard.lptdevops.website`)"
+      - "traefik.http.routers.traefik-http.entrypoints=web"
+      - "traefik.http.routers.traefik.middlewares=redirect-to-https"
+      - "traefik.http.routers.traefik-secure.middlewares=auth"
+
+networks:
+  PrviNetwork:
+    external: true

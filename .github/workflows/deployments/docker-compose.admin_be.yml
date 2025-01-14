@@ -1,0 +1,31 @@
+services:
+  admin_be:
+    image: thien19012004/admin_be:latest 
+    container_name: admin_be
+    ports:
+      - "5000:5000" 
+    environment:
+      - PORT=5000
+      - DB_URI=mongodb+srv://ducthien19012004:thien19012004@cluster0.jafns.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      - JWT_SECRET=my-ultra-secure-and-ultra-long-secret
+      - CLOUDINARY_CLOUD_NAME=dlbcypdqf
+      - CLOUDINARY_API_KEY=544677428375911
+      - CLOUDINARY_API_SECRET=MRlt8ej4Nd8RldRP8csmacy3pgk
+    restart: always 
+    networks:
+      - PrviNetwork
+    labels:
+      - "traefik.http.routers.admin_be-secure.rule=Host(`adminbe.lptdevops.website`)"
+      - "traefik.http.routers.admin_be-secure.entrypoints=websecure"
+      - "traefik.http.routers.admin_be-secure.tls=true"
+      - "traefik.http.routers.admin_be-secure.tls.certresolver=leresolver"
+
+      - "traefik.http.routers.admin_be.rule=Host(`adminbe.lptdevops.website`)"
+      - "traefik.http.routers.admin_be.entrypoints=web"
+      - "traefik.http.routers.admin_be.middlewares=redirect-to-https"
+
+      - "traefik.http.services.admin_be.loadbalancer.server.port=5000"
+
+networks:
+  PrviNetwork:
+    external: true
