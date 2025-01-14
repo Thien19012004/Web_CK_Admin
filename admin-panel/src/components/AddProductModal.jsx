@@ -14,9 +14,9 @@ const AddProductModal = ({ onClose, onProductAdded }) => {
   const [loading, setLoading] = useState(false);
 
   // **Danh mục và Size**
-  const categoryOptions = ["Running", "Casual", "Sports", "Formal"];
+  const categoryOptions = ["Running", "Basketball", "Soccer", "Lifestyle"];
   const sizeOptions = ["40", "41", "42", "43", "44"];
-  const statusOptions = ["On Stock", "Out Of Stock"]; // Trạng thái sản phẩm
+  const statusOptions = ["On Stock", "Out Of Stock", "Suspend"]; // Trạng thái sản phẩm
 
   // **Xử lý chọn size**
   const handleSizeChange = (size) => {

@@ -3,7 +3,6 @@ import { FaEdit } from "react-icons/fa"; // Import icon chỉnh sửa
 import { FaTrash } from "react-icons/fa"; // Icon thùng rác
 import { FaImages } from "react-icons/fa"; // Icon cho hình ảnh
 import {
-  fetchProducts,
   addProduct,
   updateProduct,
   deleteProduct,
@@ -65,7 +64,7 @@ const Products = () => {
       // Tạo query string
       const query = new URLSearchParams({
         page,
-        limit: 4,
+        limit: 5,
         ...(sort.sortBy && { sortBy: sort.sortBy }), // Chỉ thêm nếu có sortBy
         ...(sort.order && { order: sort.order }),   // Chỉ thêm nếu có order
         ...(filters.size && { size: filters.size }),
@@ -193,6 +192,8 @@ useEffect(() => {
   <div className="flex items-center space-x-4">
     {/* Label cho Filter */}
     <label className="text-sm font-medium text-gray-700">Filter by:</label>
+
+    {/* Lọc theo category */}
     <select
       value={filters.category}
       onChange={(e) =>
@@ -202,8 +203,23 @@ useEffect(() => {
     >
       <option value="">All Categories</option>
       <option value="Running">Running</option>
-      <option value="Casual">Casual</option>
-      <option value="Sports">Sports</option>
+      <option value="Lifestyle">Lifestyle</option>
+      <option value="Basketball">Basketball</option>
+      <option value="Soccer">Soccer</option>
+    </select>
+
+    {/* Lọc theo gender */}
+    <select
+      value={filters.gender}
+      onChange={(e) =>
+        setFilters({ ...filters, gender: e.target.value })
+      }
+      className="border p-2 rounded"
+    >
+      <option value="">All Genders</option>
+      <option value="MEN">MEN</option>
+      <option value="WOMEN">WOMEN</option>
+      <option value="KIDS">KIDS</option>
     </select>
   </div>
 

@@ -32,7 +32,7 @@ const Users = () => {
     try {
       const query = new URLSearchParams({
         page,
-        limit: 2,
+        limit: 4,
         ...(filters.name && { name: filters.name }), // Lọc theo tên
         ...(filters.email && { email: filters.email }), // Lọc theo email
         ...(sort.field && { sortField: sort.field }), // Sắp xếp theo trường

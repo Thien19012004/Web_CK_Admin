@@ -29,7 +29,6 @@ const UpdateProductDrawer = ({ product, onClose, onSave }) => {
     if (!formData.category || formData.category.trim() === "") {
       errors.category = "Category is required";
     }
-  
     // Kiểm tra size
     const sizeArray = Array.isArray(formData.sizes) // Kiểm tra nếu là mảng
   ? formData.sizes // Giữ nguyên nếu đã là mảng
@@ -156,11 +155,16 @@ const UpdateProductDrawer = ({ product, onClose, onSave }) => {
 {/* Category */}
 <div>
   <Label value="Category" />
-  <TextInput
+  <Select
     name="category"
     value={formData.category}
     onChange={handleChange}
-  />
+  >
+    <option value="Soccer">Soccer</option>
+    <option value="Basketball">Basketball</option>
+    <option value="Running">Running</option>
+    <option value="Lifestyle">Lifestyle</option>
+  </Select>
   {formErrors?.category && (
     <p className="text-red-500 text-sm mt-1">{formErrors.category}</p>
   )}

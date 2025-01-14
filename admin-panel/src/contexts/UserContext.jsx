@@ -10,9 +10,11 @@ export const UserProvider = ({ children }) => {
     avatar: "",
   });
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
+  
 
+  useEffect(() => {
+    
+    const token = localStorage.getItem("token");
     const fetchUserInfo = async () => {
       try {
         if (token) {
@@ -26,7 +28,7 @@ export const UserProvider = ({ children }) => {
             username: res.data.username || "Admin",
             avatar: res.data.avatar || "",
             email: res.data.email || "",
-            role: res.data.role || "user",
+            role: res.data.role || "admin",
             registrationDate: res.data.registrationDate || "N/A",
           });
         }

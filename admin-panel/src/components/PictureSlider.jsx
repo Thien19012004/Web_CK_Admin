@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect  } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -33,7 +33,9 @@ const PictureSlider = ({ productId, images = [], onClose }) => {
     }
   };
   
-  
+  useEffect(() => {
+    fetchUpdatedImages();
+  }, [productId]);
 
   // **Upload hoặc thay thế ảnh mới**
   const handleUpload = async (event) => {
