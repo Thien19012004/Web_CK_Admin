@@ -11,7 +11,7 @@ on:
 jobs:
   deploy_fe:
     name: Deploy Frontend Application
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Checkout repository
