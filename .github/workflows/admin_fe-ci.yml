@@ -10,7 +10,7 @@ on:
 
 jobs:
   call_build_and_push:
-    uses: ./.github/workflows/templates/build_and_push.yml
+    uses: ./.github/workflows/build_and_push.yml
     with:
       service_name: 'admin_fe'
       dockerfile_path: 'admin-panel/Dockerfile'
