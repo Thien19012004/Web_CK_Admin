@@ -13,7 +13,7 @@ const SalesThisWeek = () => {
     const fetchSalesData = async () => {
       try {
         const token = localStorage.getItem("token");
-        console.log(getBaseUrl())
+        //console.log(getBaseUrl())
         const res = await fetch(
           `${getBaseUrl()}/orders/report/sales-data?timeframe=${timeframe}`,
           {

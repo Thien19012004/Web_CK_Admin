@@ -27,7 +27,7 @@ const LoginForm = ({ setIsAuthenticated }) => {
         // Lưu token vào localStorage
         localStorage.setItem("token", token);
   
-        console.log("Login response:", res.data);
+        //console.log("Login response:", res.data);
   
         // Gọi API để lấy thông tin người dùng
         try {

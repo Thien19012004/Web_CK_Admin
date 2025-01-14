@@ -127,7 +127,7 @@ useEffect(() => {
     // Nếu không có lỗi, tiến hành cập nhật
     try {
       await updateProduct(id, updatedData); // Gọi API cập nhật
-      console.log(updatedData);
+      //console.log(updatedData);
       loadPagedProducts(currentPage); // Tải lại dữ liệu
       handleCloseDrawer(); // Đóng modal chỉ khi cập nhật thành công
     } catch (error) {
