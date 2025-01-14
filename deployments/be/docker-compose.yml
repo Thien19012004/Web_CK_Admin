@@ -1,9 +1,9 @@
 services:
   admin_be:
-    image: thien19012004/admin_be:latest 
+    image: thien19012004/admin_be:latest
     container_name: admin_be
     ports:
-      - "5000:5000" 
+      - "5000:5000"
     environment:
       - PORT=5000
       - DB_URI=mongodb+srv://ducthien19012004:thien19012004@cluster0.jafns.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
@@ -11,7 +11,7 @@ services:
       - CLOUDINARY_CLOUD_NAME=dlbcypdqf
       - CLOUDINARY_API_KEY=544677428375911
       - CLOUDINARY_API_SECRET=MRlt8ej4Nd8RldRP8csmacy3pgk
-    restart: always 
+    restart: always
     networks:
       - PrviNetwork
     labels:

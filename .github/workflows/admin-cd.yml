@@ -1,0 +1,35 @@
+name: Deploy Application
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy_fe:
+    name: Deploy Frontend Application
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+
+      - name: Deploy FE
+        run: |
+          pwd && ls
+          cd deployments/fe
+          docker-compose down
+          docker-compose pull
+          docker-compose up -d
+
+      - name: Deploy BE
+        run: |
+          cd deployments/be
+          docker-compose down
+          docker-compose pull
+          docker-compose up -d
+

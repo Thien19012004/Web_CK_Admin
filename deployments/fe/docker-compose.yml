@@ -1,23 +1,23 @@
 services:
   admin_fe:
-    image: thien19012004/admin_fe:latest 
+    image: thien19012004/admin_fe:latest
     container_name: admin_fe
     ports:
-      - "8080:8080" 
+      - "8080:8080"
     environment:
-      - NODE_ENV=development 
-      - VITE_DOMAIN=http://adminbe.lptdevops.website
-      - VITE_DOMAIN_HOST=http://adminbe.lptdevops.website
-    restart: always 
+      - NODE_ENV=development
+      - VITE_DOMAIN=https://adminbe.lptdevops.website
+      - VITE_DOMAIN_HOST=https://adminbe.lptdevops.website
+    restart: always
     networks:
       - PrviNetwork
     labels:
-      - "traefik.http.routers.admin_fe-secure.rule=Host(`adminfe.lptdevops.website`)"
+      - "traefik.http.routers.admin_fe-secure.rule=Host(`admin.lptdevops.website`)"
       - "traefik.http.routers.admin_fe-secure.entrypoints=websecure"
       - "traefik.http.routers.admin_fe-secure.tls=true"
       - "traefik.http.routers.admin_fe-secure.tls.certresolver=leresolver"
 
-      - "traefik.http.routers.admin_fe.rule=Host(`admin_fe.lptdevops.website`)"
+      - "traefik.http.routers.admin_fe.rule=Host(`admin.lptdevops.website`)"
       - "traefik.http.routers.admin_fe.entrypoints=web"
       - "traefik.http.routers.admin_fe.middlewares=redirect-to-https"
 
