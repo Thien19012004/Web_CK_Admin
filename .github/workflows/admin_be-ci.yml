@@ -1,0 +1,20 @@
+name: Build and Push Admin BE Docker Image
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  call_build_and_push:
+    uses: ./.github/workflows/templates/build_and_push.yml
+    with:
+      service_name: 'admin_be'
+      dockerfile_path: 'admin-backend/Dockerfile'
+      context_path: 'admin-backend'
+    secrets: 
+      DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
+      DOCKERHUB_PASS: ${{ secrets.DOCKERHUB_PASS }}

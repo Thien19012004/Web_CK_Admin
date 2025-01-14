@@ -6,7 +6,7 @@ exports.getProfile = async (req, res) => {
     try {
         const userId = req.user.id;
         const user = await User.findById(userId).select('-password');
-        console.log('Dữ liệu người dùng:', user); // Log dữ liệu lấy từ DB
+        //console.log('Dữ liệu người dùng:', user); // Log dữ liệu lấy từ DB
         res.json(user);
     } catch (err) {
         console.error('Lỗi server:', err);
@@ -24,9 +24,9 @@ exports.updateProfile = async (req, res) => {
 
         // Nếu có file ảnh được upload qua middleware uploadAvatar
         if (req.file) {
-            console.log('File đã upload:', req.file); // Log file
+            console.log('File đã upload:', req.file); // Kiem tra file
             avatarUrl = req.file.path; // Middleware đã xử lý Cloudinary, lấy URL trực tiếp
-            console.log('Avatar URL:', avatarUrl); // Log URL ảnh mới
+            console.log('Avatar URL:', avatarUrl); // Kiem tra URL ảnh mới
         }
 
         // Cập nhật thông tin người dùng

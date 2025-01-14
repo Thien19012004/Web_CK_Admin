@@ -1,0 +1,20 @@
+name: Build and Push Admin FE Docker Image
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  call_build_and_push:
+    uses: ./.github/workflows/templates/build_and_push.yml
+    with:
+      service_name: 'admin_fe'
+      dockerfile_path: 'admin-panel/Dockerfile'
+      context_path: 'admin-panel'
+    secrets: 
+      DOCKERHUB_USER: ${{ secrets.DOCKERHUB_USER }}
+      DOCKERHUB_PASS: ${{ secrets.DOCKERHUB_PASS }}
