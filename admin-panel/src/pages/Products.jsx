@@ -221,6 +221,22 @@ useEffect(() => {
       <option value="WOMEN">WOMEN</option>
       <option value="KIDS">KIDS</option>
     </select>
+
+    {/* Lọc theo size */}
+    <select
+      value={filters.size}
+      onChange={(e) =>
+        setFilters({ ...filters, size: e.target.value })
+      }
+      className="border p-2 rounded"
+    >
+      <option value="">All Sizes</option>
+      <option value="40">40</option>
+      <option value="41">41</option>
+      <option value="42">42</option>
+      <option value="43">43</option>
+      <option value="44">44</option>
+    </select>
   </div>
 
   {/* Bộ sắp xếp */}
