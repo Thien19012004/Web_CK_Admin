@@ -9,8 +9,8 @@ on:
       - main
 
 jobs:
-  deploy_fe:
-    name: Deploy Frontend Application
+  deploy:
+    name: Deploy Application
     runs-on: self-hosted
 
     steps:
@@ -28,7 +28,7 @@ jobs:
 
       - name: Deploy BE
         run: |
-          cd deployments/be
+          cd ../deployments/be
           docker-compose down
           docker-compose pull
           docker-compose up -d
