@@ -13,7 +13,12 @@ const app = express();
 
 // Middleware
 // Cấu hình CORS
-app.use(cors());
+app.use(cors({
+    origin: ['http://localhost:8080', 'https://admin.lptdevops.website'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+}));
 
 app.use(express.json());
 
