@@ -14,8 +14,8 @@ const app = express();
 // Middleware
 // Cấu hình CORS
 app.use(cors({
-    origin: 'https://admin.lptdevops.website', // Hoặc '*'
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    origin: 'https://admin.lptdevops.website',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
