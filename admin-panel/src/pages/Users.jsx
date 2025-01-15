@@ -75,7 +75,7 @@ const Users = () => {
 
     try {
       await updateUserStatus(user._id, newStatus); // Cập nhật trạng thái
-      loadUsers(); // Cập nhật danh sách sau khi thay đổi
+      loadUsers(currentPage); // Cập nhật danh sách sau khi thay đổi
     } catch (error) {
       console.error("Failed to update status:", error);
     }
@@ -105,7 +105,7 @@ const Users = () => {
   const handleDelete = async (user) => {
     try {
       await deleteUser(user._id); // Gọi API xóa người dùng
-      loadUsers(); // Cập nhật danh sách
+      loadUsers(currentPage); // Cập nhật danh sách
     } catch (error) {
       console.error("Failed to delete user:", error);
     }
