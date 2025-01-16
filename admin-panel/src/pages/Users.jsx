@@ -204,7 +204,7 @@ const Users = () => {
         {users.map((user) => (
   <Table.Row key={user._id}>
     <Table.Cell>{user.username}</Table.Cell>
-    <Table.Cell>{user.email || "N/A"}</Table.Cell>
+    <Table.Cell>{user.googleID ? "N/A" : user.email || "N/A"}</Table.Cell>
     <Table.Cell>{user.role}</Table.Cell>
     <Table.Cell>
       <span
@@ -271,7 +271,7 @@ const Users = () => {
     <Button
       key={index}
       onClick={() => loadUsers(index + 1)}
-      className={currentPage === index + 1 ? "bg-blue-500 text-white" : "bg-gray-200"}
+      className={currentPage === index + 1 ? "bg-blue-500 text-white mx-1" : "bg-gray-200 mx-1"}
     >
       {index + 1}
     </Button>
