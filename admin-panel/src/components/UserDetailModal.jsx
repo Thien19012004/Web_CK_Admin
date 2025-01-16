@@ -42,7 +42,7 @@ const UserDetailModal = ({ showModal, onClose, selectedUser }) => {
                 <strong>Username:</strong> {selectedUser.username}
               </p>
               <p>
-                <strong>Email:</strong> {selectedUser.email || "N/A"}
+                <strong>Email:</strong> {selectedUser.googleID ? "N/A" : selectedUser.email || "N/A"}
               </p>
               <p>
                 <strong>Role:</strong> {selectedUser.role}
