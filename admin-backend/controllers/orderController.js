@@ -2,20 +2,30 @@ const Order = require('../models/Order');
 
 // Get all orders (with sorting and filtering)
 exports.getAllOrders = async (req, res) => {
-    try {
-        const { status } = req.query; // Filter by status (if provided)
-        const query = status ? { status } : {}; // Build query object
+  try {
+      const { status, page = 1, limit = 10 } = req.query; // Filter, page, limit
+      const query = status ? { status } : {}; // Build query object
 
-        const orders = await Order.find(query)
-            .sort({ date: -1 }) // Sort by creation date (newest first)
-            .populate('userId', 'username email') // Populate user details
-            .populate('products.productId', 'name img'); // Populate product details
+      const orders = await Order.find(query)
+          .sort({ date: -1 }) // Sort by creation date (newest first)
+          .populate('userId', 'username email') // Populate user details
+          .populate('products.productId', 'name img') // Populate product details
+          .skip((page - 1) * limit) // Skip documents for pagination
+          .limit(Number(limit)); // Limit number of documents
 
-        res.json(orders);
-    } catch (err) {
-        console.error('Error fetching orders:', err);
-        res.status(500).json({ message: 'Server error' });
-    }
+      const totalOrders = await Order.countDocuments(query); // Total orders count
+      const totalPages = Math.ceil(totalOrders / limit); // Calculate total pages
+
+      res.json({
+          orders,
+          totalOrders,
+          totalPages,
+          currentPage: Number(page),
+      });
+  } catch (err) {
+      console.error('Error fetching orders:', err);
+      res.status(500).json({ message: 'Server error' });
+  }
 };
 
 // Get order details by ID
