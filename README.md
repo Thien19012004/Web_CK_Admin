@@ -14,8 +14,9 @@ The panel is built with a robust backend using Express.js and the frontend utili
    - **Product List**: Filter products by name, category, manufacturer. Sort products by creation time, price, or total purchases. The product list supports AJAX paging.
    - **Create & Update Products**: Admins can upload multiple product photos, specify product status, and assign products to categories or manufacturers. The form validates user input to ensure accuracy.
    - **Product Editing**: Modify product details, including updating images, categories, and status.
-![product management](images/image2.jpg)
-
+<p align="center">
+  <img src="images/image2.jpg" alt="Product Management">
+</p>
 ### 2. **User Management**
    - **Update Admin Profile**: Allows the admin to update their profile details.
    - **Account List**: View and filter accounts by name, email, or registration time. The account list supports sorting and pagination using AJAX.
@@ -30,8 +31,9 @@ The panel is built with a robust backend using Express.js and the frontend utili
 ### 4. **Reports & Analytics**
    - **Revenue Reports**: View revenue reports within a specific time range (day, week, month).
    - **Top Revenue Products**: See the best-selling products within a selected time range.
-![report](images/image1.jpg)
-
+<p align="center">
+  <img src="images/image1.jpg" alt="Product Management">
+</p>
 ## CI/CD Pipeline
 This project is integrated with a CI/CD pipeline to automate the build, and deployment processes. Every code change pushes the latest updates to the staging or production environment.
 
